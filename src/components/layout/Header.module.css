@@ -1,0 +1,98 @@
+.header {
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 1.5rem 2.5rem;
+    background-color: transparent; 
+    z-index: 100; 
+    font-family: 'Drexia', sans-serif;
+  }
+
+  .headerWithBg {
+    background-color: #111111;
+    backdrop-filter: blur(10px);
+  }
+  
+  .logoLink {
+    display: flex;
+    align-items: center;
+    z-index: 2; 
+  }
+  
+  .logo {
+    height: auto;
+    width: auto;
+    max-height: clamp(8rem, 12vw, 9rem); 
+    transition: transform 0.3s ease;
+  }
+  
+  .logo:hover {
+    transform: scale(1.05);
+  }
+  
+ 
+  .nav {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 3rem;
+    z-index: 1;
+  }
+  
+  .link {
+    color: #ff0000;
+    text-decoration: none;
+    font-size: 2rem;
+    position: relative;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+
+  
+  /* Gothic-style underline effect (optional) */
+  .link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -0.5rem;
+    width: 100%;
+    height: 1.5rem;
+    background: url('/gothic-underline.svg') no-repeat center bottom;
+    background-size: contain;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .link:hover::after {
+    opacity: 1;
+  }
+  
+  @media (max-width: 768px) {
+    .header {
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+  
+    .nav {
+      position: static;
+      transform: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+  
+         
+      .logo {
+        width: clamp(200px, 25vw, 320px);
+        height: auto;
+        transition: transform 0.3s ease;
+      }
+  }

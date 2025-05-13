@@ -1,0 +1,157 @@
+.container {
+  padding-top: clamp(10rem, 12vw, 10rem);
+  padding: 8rem 0;
+  max-width: 900px;
+  width: 100vw;
+  margin: 0 auto;
+  background-color: #111;
+  color: #e2e2e2;
+  font-family: 'Open Sans', sans-serif;
+  flex: 1;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.card {
+  background-color: #222;
+  border: 1px solid #444;
+  border-radius: 10px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+
+.card:hover {
+  background-color: #2e2e2e;
+  transform: translateY(-4px);
+}
+
+.detailsButton {
+  background-color: #fff6c1;
+  padding: 0.3rem 0.6rem;
+  border-radius: 5px;
+  font-size: 0.75rem;
+  color: #111;
+  margin-top: 0.5rem;
+  display: inline-block;
+}
+
+.uploadButton {
+  background-color: transparent;
+  color: #c0c0c0; 
+  border: 1px solid #fff6c1; 
+  padding: 0.5rem 1.5rem;
+  margin: 1.5rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Open Sans', sans-serif;
+}
+
+
+.buttonRow {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.detailsButton {
+  background-color: #fff6c1;
+  padding: 0.3rem 0.6rem;
+  border-radius: 5px;
+  font-size: 0.75rem;
+  color: #111;
+  margin-top: 0.5rem;
+  display: inline-block;
+}
+
+.detailsButton:hover {
+  background-color: #e6b63e;
+}
+
+
+.deleteButton {
+  background-color: #111111;
+  color: #ff0000;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: normal;
+  transition: background-color 0.2s ease-in-out;
+}
+ 
+.deleteButton:hover {
+  background-color: #8B0000; 
+  color: #fff;
+  border-color: #ff4d4d;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.input, .select, .textarea {
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  background-color: #333;
+  color: #e2e2e2;
+  border: 1px solid #444;
+  border-radius: 6px;
+  font-size: 1rem;
+  }
+  
+  .label, .checkboxLabel, .legend {
+  color: #ff0000;
+  margin-bottom: 0.5rem;
+  }
+  
+  .formats {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  }
+  
+  .fieldset {
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  }
+  
+  .fieldset legend {
+  font-size: 1.2rem;
+  }
+  
+  .checkboxLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  }
+
+  .header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+  
+  .title {
+    text-align: center;
+    font-size: 2rem;
+    color: #811818;
+    margin-bottom: 1rem;
+  }
+  
+  .uploadWrapper {
+    text-align: center;
+  }

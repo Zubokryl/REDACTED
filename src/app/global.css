@@ -1,0 +1,27 @@
+@font-face {
+    font-family: 'Drexia';
+    src: url('/fonts/Drexia.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  html, body {
+    font-family: 'Open Sans', sans-serif;
+    height: 100%;
+    width: 100vw;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Open Sans', sans-serif;
+    background-color: #111111;
+    color: #b9b7b7;
+    margin: 0;
+    padding: 0;
+  }
