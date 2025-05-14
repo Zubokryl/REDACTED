@@ -111,3 +111,65 @@ http://localhost:3000
 * `@types/node` ^20
 * `tailwindcss` ^4.1.3
 * `@tailwindcss/postcss` ^4
+
+### Migrations
+
+## USERS
+
+```
+  Schema::create('users', function (Blueprint $table) {
+    $table->id();
+    $table->string('name');
+    $table->string('email')->unique();
+    $table->string('password');
+
+     $table->enum('role', ['user', 'creator', 'admin'])->default('creator');
+
+     $table->text('about')->nullable();
+    $table->string('avatar')->nullable();
+    $table->json('social_links')->nullable(); 
+    $table->text('experience')->nullable();
+    $table->json('skills')->nullable(); 
+    $table->json('software')->nullable(); 
+    $table->string('contact')->nullable(); 
+
+    $table->timestamps();
+});
+
+```
+
+## MODELS
+
+```
+Schema::create('models', function (Blueprint $table) {
+    $table->id();
+
+    $table->foreignId('user_id')->constrained()->onDelete('cascade');
+
+    $table->string('title');
+    $table->text('description')->nullable();
+    $table->string('category')->nullable();
+
+    $table->decimal('price', 8, 2)->default(0);
+    $table->string('license')->default('Standard License');
+
+    $table->json('formats')->nullable(); // [.fbx, .obj, .glb]
+    $table->json('features')->nullable(); // rigged, animated, uvMapped, pbr
+    $table->integer('vertices')->default(0);
+    $table->boolean('printable')->default(false);
+
+    $table->json('tools')->nullable();
+    $table->json('tags')->nullable();
+    $table->json('materials')->nullable();
+    $table->boolean('customizable')->default(false);
+
+    $table->date('release_date')->nullable();
+
+    $table->string('model_file'); 
+    $table->json('images')->nullable();
+    $table->string('preview_video')->nullable(); 
+    $table->timestamps();
+});
+```
+## MODEL_REVIEWS
+
