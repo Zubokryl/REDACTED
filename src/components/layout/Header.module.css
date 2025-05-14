@@ -74,25 +74,94 @@
   .link:hover::after {
     opacity: 1;
   }
+
+  .burger {
+    display: none;
+    font-size: 2.5rem;
+    color: #ff0000;
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+  }
   
   @media (max-width: 768px) {
     .header {
-      flex-direction: column;
-      gap: 1.5rem;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem;
+      position: relative;
+    }
+  
+    .burger {
+      display: block;
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      font-size: 2.5rem;
+      color: #ff0000;
+      background: none;
+      border: none;
+      cursor: pointer;
+      z-index: 110;
     }
   
     .nav {
-      position: static;
-      transform: none;
+      display: none;
       flex-direction: column;
-      align-items: center;
-      gap: 1rem;
+      justify-content: center; /* Центровка по вертикали */
+      align-items: center; /* Центровка по горизонтали */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;  /* Занимает всю ширину экрана */
+      height: 100vh; /* Занимает всю высоту экрана */
+      background-color: #000000; /* Черный непрозрачный фон */
+      gap: 2.5rem;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      transform: translateX(-100%); /* Начальное состояние меню за пределами экрана */
     }
   
-         
-      .logo {
-        width: clamp(200px, 25vw, 320px);
-        height: auto;
-        transition: transform 0.3s ease;
-      }
+    .navOpen {
+      display: flex;
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(0); /* Меню открывается */
+    }
+  
+    .link {
+      font-size: 2rem;
+      color: #ff0000;
+      text-decoration: none;
+      background: none;
+      border: none;
+      font-family: inherit;
+      cursor: pointer;
+      position: relative;
+    }
+  
+    .link::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -0.5rem;
+      width: 100%;
+      height: 1.5rem;
+      background: url('/gothic-underline.svg') no-repeat center bottom;
+      background-size: contain;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+  
+    .link:hover::after {
+      opacity: 1;
+    }
   }

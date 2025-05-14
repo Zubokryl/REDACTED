@@ -32,15 +32,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AuthProvider>
-          {/* Header будет отображаться на каждой странице */}
           <Header />
-          
-          {/* Основной контент страницы */}
           <main>
             {children}
           </main>
-
-          {/* Footer будет отображаться на каждой странице */}
           <Footer />
         </AuthProvider>
       </body>
