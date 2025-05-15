@@ -112,31 +112,34 @@ http://localhost:3000
 * `tailwindcss` ^4.1.3
 * `@tailwindcss/postcss` ^4
 
+
 ### Migrations
 
 ## USERS
 
-```
-  Schema::create('users', function (Blueprint $table) {
+
+  ```Schema::create('users', function (Blueprint $table) {
     $table->id();
     $table->string('name');
     $table->string('email')->unique();
     $table->string('password');
-
-     $table->enum('role', ['user', 'creator', 'admin'])->default('creator');
-
-     $table->text('about')->nullable();
-    $table->string('avatar')->nullable();
-    $table->json('social_links')->nullable(); 
+    $table->enum('role', ['user', 'creator', 'admin'])->default('creator');
+    $table->text('about')->nullable();
+    $table->json('social_links')->nullable();
     $table->text('experience')->nullable();
-    $table->json('skills')->nullable(); 
-    $table->json('software')->nullable(); 
-    $table->string('contact')->nullable(); 
+    $table->json('skills')->nullable();
+    $table->json('software')->nullable();
+    $table->string('contact')->nullable();
 
+    // Jetstream / Fortify 
+    $table->timestamp('email_verified_at')->nullable();
+    $table->rememberToken();
+    $table->foreignId('current_team_id')->nullable();
+    $table->string('profile_photo_path', 2048)->nullable();
     $table->timestamps();
-});
+});```
 
-```
+
 
 ## MODELS
 
@@ -170,6 +173,20 @@ Schema::create('models', function (Blueprint $table) {
     $table->string('preview_video')->nullable(); 
     $table->timestamps();
 });
+
 ```
 ## MODEL_REVIEWS
+
+```
+Schema::create('model_reviews', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('user_id')->constrained()->onDelete('cascade');
+    $table->foreignId('model_id')->constrained()->onDelete('cascade');
+    $table->unsignedTinyInteger('rating')->default(5);
+    $table->text('comment')->nullable();
+
+    $table->timestamps();
+});
+
+```
 

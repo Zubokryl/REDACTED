@@ -5,14 +5,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import type { Profile } from '@/types';
 
-const defaultProfile = {
-  nickname: '',
+const defaultProfile: Profile = {
+  name: '',
   about: '',
   experience: '',
   contact: '',
   skills: '',
-  software: '',
+  software: [],
   avatar: '',
   socialLinks: {
     Artstation: '',
@@ -21,9 +22,22 @@ const defaultProfile = {
     Instagram: '',
     LinkedIn: '',
     Twitter: '',
-    YouTube: ''
+    YouTube: '',
   },
 };
+
+const SOFTWARE_OPTIONS = [
+  'Substance 3D Painter',
+  'Substance 3D Designer',
+  'ZBrush',
+  'Unity',
+  'Blender',
+  'Maya',
+  'Photoshop',
+  '3ds Max',
+  'Marmoset Toolbag'
+];
+
 
 export default function CreatorProfilePage() {
   const toBase64 = (file: File): Promise<string> =>
@@ -36,17 +50,27 @@ export default function CreatorProfilePage() {
 
   const { user, profile, setAuth } = useAuth();
   const isOwner = user?.role === 'creator';
+  const [modelCount, setModelCount] = useState(0);
 
-  const [profileData, setProfileData] = useState(defaultProfile);
+  const [profileData, setProfileData] = useState<Profile>(defaultProfile);
   const [isEditing, setIsEditing] = useState(false);
 
-
+  useEffect(() => {
+    const userId = user?.id || 'demo-user';
+    const localModels = JSON.parse(localStorage.getItem(`models-${userId}`) || '[]');
+    setModelCount(localModels.length);
+  }, [user]);
 
   useEffect(() => {
     if (profile) {
       setProfileData({
         ...defaultProfile,
         ...profile,
+        software: Array.isArray(profile.software)
+          ? profile.software
+          : typeof profile.software === 'string'
+            ? profile.software.split(',').map((s) => s.trim())
+            : [],
         socialLinks: {
           ...defaultProfile.socialLinks,
           ...(profile.socialLinks || {}),
@@ -55,11 +79,18 @@ export default function CreatorProfilePage() {
     }
   }, [profile]);
 
-  const handleChange = <T extends keyof typeof defaultProfile>(
-    field: T,
-    value: typeof defaultProfile[T]
-  ) => {
+  const handleChange = <T extends keyof Profile>(field: T, value: Profile[T]) => {
     setProfileData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const toggleSoftware = (option: string) => {
+    setProfileData((prev) => {
+      const current = prev.software as string[];
+      const updated = current.includes(option)
+        ? current.filter((s) => s !== option)
+        : [...current, option];
+      return { ...prev, software: updated };
+    });
   };
 
   const handleSave = () => {
@@ -78,7 +109,7 @@ export default function CreatorProfilePage() {
     <div className={styles.container}>
       <div className={styles.content}>
         <h1 className={styles.heading}></h1>
-  
+
         <section className={styles.profileTop}>
           <div className={styles.profileRow}>
             <div className={styles.profileAboutContainer}>
@@ -95,7 +126,7 @@ export default function CreatorProfilePage() {
                 )}
               </section>
             </div>
-  
+
             <div className={styles.profileDetails}>
               <div className={styles.avatarWrapper}>
                 <Image
@@ -119,14 +150,36 @@ export default function CreatorProfilePage() {
                   />
                 )}
               </div>
-  
+
               <div className={styles.profileInfo}>
-                <p className={styles.nickname}>
-                  {profileData.nickname || 'Nickname'}
-                </p>
-                <p className={styles.email}>
-                  {profileData.contact || 'Email'}
-                </p>
+                <div className={styles.name}>
+                  {isOwner && isEditing ? (
+                    <input
+                      className={styles.input}
+                      type="text"
+                      placeholder="Name"
+                      value={profileData.name}
+                      onChange={(e) => handleChange('name', e.target.value)}
+                    />
+                  ) : (
+                    <p>{profileData.name || 'Name'}</p>
+                  )}
+                </div>
+
+                <div className={styles.email}>
+                  {isOwner && isEditing ? (
+                    <input
+                      className={styles.input}
+                      type="email"
+                      placeholder="Email"
+                      value={profileData.contact}
+                      onChange={(e) => handleChange('contact', e.target.value)}
+                    />
+                  ) : (
+                    <p>{profileData.contact || 'Email'}</p>
+                  )}
+                </div>
+
                 <p className={styles.website}>
                   🌐{' '}
                   <a
@@ -137,7 +190,7 @@ export default function CreatorProfilePage() {
                     yourwebsite.com
                   </a>
                 </p>
-  
+
                 <div className={styles.socialLinks}>
                   <p>Follow on Social:</p>
                   {isOwner && isEditing ? (
@@ -154,7 +207,7 @@ export default function CreatorProfilePage() {
                                 handleChange('socialLinks', {
                                   ...profileData.socialLinks,
                                   [platform]: e.target.checked
-                                    ? `https://www.${platform.toLowerCase()}.com/yourprofile`
+                                    ? `https://www.${String(platform).toLowerCase()}.com/yourprofile`
                                     : '',
                                 })
                               }
@@ -197,22 +250,22 @@ export default function CreatorProfilePage() {
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            <Image
-                              src={`/icons/${platform}.png`}
-                              alt={platform}
-                              width={24}
-                              height={24}
+                           <Image
+                           src={`/icons/${platform}.png`}
+                           alt={String(platform)}
+                           width={24}
+                            height={24}
                             />
                           </a>
                         ))}
                     </div>
                   )}
                 </div>
-  
+
                 <Link href="/creator/store" className={styles.storeLink}>
-                 View Store (0 items)
+                 View Store ({modelCount} {modelCount === 1 ? 'item' : 'items'})
                 </Link>
-  
+
                 {isOwner && (
                   <div className={styles.profileButtons}>
                     {isEditing ? (
@@ -227,7 +280,7 @@ export default function CreatorProfilePage() {
                         Edit Profile
                       </button>
                     )}
-  
+
                     <button
                       className={`${styles.profileButton} ${styles.deleteButton}`}
                       onClick={handleReset}
@@ -240,12 +293,11 @@ export default function CreatorProfilePage() {
             </div>
           </div>
         </section>
-  
+
         {[
   { label: 'Experience', field: 'experience', multiline: true },
   { label: 'Contact', field: 'contact', type: 'email' },
   { label: 'Skills', field: 'skills' },
-  { label: 'Software', field: 'software' },
 ].map(({ label, field, multiline, type }) => (
   <section className={styles.section} key={field}>
     <h3 className={styles.sectionTitle}>{label}</h3>
@@ -253,11 +305,7 @@ export default function CreatorProfilePage() {
       multiline ? (
         <textarea
           className={styles.textarea}
-          value={
-            typeof profileData[field as keyof typeof defaultProfile] === 'string'
-              ? (profileData[field as keyof typeof defaultProfile] as string)
-              : ''
-          }
+          value={profileData[field as keyof typeof defaultProfile] as string}
           onChange={(e) =>
             handleChange(field as keyof typeof defaultProfile, e.target.value)
           }
@@ -266,35 +314,64 @@ export default function CreatorProfilePage() {
         <input
           className={styles.input}
           type={type || 'text'}
-          value={
-            typeof profileData[field as keyof typeof defaultProfile] === 'string'
-              ? (profileData[field as keyof typeof defaultProfile] as string)
-              : ''
-          }
+          value={profileData[field as keyof typeof defaultProfile] as string}
           onChange={(e) =>
             handleChange(field as keyof typeof defaultProfile, e.target.value)
           }
         />
       )
+    ) : field === 'skills' ? (
+      <div className={styles.tagsContainer}>
+        {(profileData.skills as string)
+          .split(',')
+          .map((skill) => skill.trim())
+          .filter(Boolean)
+          .map((skill, index) => (
+            <div key={index} className={styles.skillTag}>
+              {skill}
+            </div>
+          ))}
+      </div>
     ) : (
-      typeof profileData[field as keyof typeof defaultProfile] === 'string' &&
-      (field === 'skills' || field === 'software' ? (
-        <div className={styles.tagsContainer}>
-          {(profileData[field as keyof typeof defaultProfile] as string)
-            .split(',')
-            .map((tag, i) => (
-              <span key={i} className={styles.tag}>
-                {tag.trim()}
-              </span>
-            ))}
-        </div>
-      ) : (
-        <p>{profileData[field as keyof typeof defaultProfile] as string}</p>
-      ))
+      <p>{profileData[field as keyof typeof defaultProfile] as string}</p>
     )}
   </section>
 ))}
+
+<section className={styles.section}>
+  <h3 className={styles.sectionTitle}>Software</h3>
+  {isOwner && isEditing ? (
+    <div className={styles.softwareCheckboxes}>
+      {SOFTWARE_OPTIONS.map((software) => (
+        <label key={software} className={styles.checkboxLabel}>
+          <input
+            type="checkbox"
+            checked={(profileData.software as string[]).includes(software)}
+            onChange={() => toggleSoftware(software)}
+          />
+          {software}
+        </label>
+      ))}
+    </div>
+  ) : (
+    <div className={styles.tagsContainer}>
+      {(profileData.software as string[])
+      .filter((s) => s.trim() !== '') 
+      .map((software) => (
+        <div key={software} className={styles.softwareTag}>
+          <Image
+            src={`/icons/software/${software}.png`}
+            alt={software}
+            width={20}
+            height={20}
+          />
+          <span>{software}</span>
+        </div>
+      ))}
+    </div>
+  )}
+</section>
       </div>
-      </div>
+    </div>
   );
 }

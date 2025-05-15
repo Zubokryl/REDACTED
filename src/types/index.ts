@@ -20,12 +20,12 @@ export interface SocialLinks {
 
 
 export interface Profile {
-  nickname: string;
+  name: string;
   about: string;
   experience: string;
   contact: string;
   skills: string;
-  software: string;
+  software: string[] | string | null;
   avatar: string;
   socialLinks: SocialLinks;
 }
@@ -34,6 +34,7 @@ export interface Profile {
 export interface AuthData {
   user: User | null;
   profile: Profile | null;
+  
 }
 
 
@@ -77,3 +78,16 @@ export interface ModelForm {
   modelURL: string;
 }
 
+export const SOFTWARE_OPTIONS = [
+  'Substance 3D Painter',
+  'Substance 3D Designer',
+  'ZBrush',
+  'Unity',
+  'Blender',
+  'Maya',
+  'Photoshop',
+  '3ds Max',
+  'Marmoset Toolbag',
+] as const;
+
+export type SoftwareOption = typeof SOFTWARE_OPTIONS[number];

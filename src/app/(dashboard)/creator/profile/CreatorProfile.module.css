@@ -95,7 +95,7 @@
     min-width: 0;
   }
   
-  .nickname {
+  .name {
     font-size: 1.5rem;
     font-weight: bold;
     color: #ffffff;
@@ -277,6 +277,48 @@
     border: 1px solid #555;
   }
 
+  .softwareCheckboxes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-left: 0.5rem;
+  }
+  
+  .checkboxLabel {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    cursor: pointer;
+  }
+
+  .tagsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  
+  .softwareTag,
+  .skillTag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.3rem 0.6rem;
+    background-color: #222;
+    border: 1px solid #555;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    color: #ddd;
+    white-space: nowrap;
+  }
+  
+  .softwareTag img {
+    display: inline-block;
+  }
+
+  
+
   @media (max-width: 768px) {
     .content {
       padding: 0 1rem;
@@ -367,7 +409,7 @@
       min-width: 0;
     }
   
-    .nickname {
+    .name {
       font-size: 1.25rem;  
       font-weight: bold;
       color: #ffffff;
