@@ -12,4 +12,9 @@ npm run dev
 php artisan serve
 http://127.0.0.1:8000
 
-
+php.ini:
+memory_limit = 5G
+upload_max_filesize = 5G
+post_max_size = 5G
+max_execution_time = 7200
+max_input_time = 7200

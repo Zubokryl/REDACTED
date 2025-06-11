@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('about')->nullable();
             $table->json('social_links')->nullable();
             $table->text('experience')->nullable();
-            $table->json('skills')->nullable();
+            $table->text('skills')->nullable();
             $table->json('software')->nullable();
             $table->string('contact')->nullable();
 
