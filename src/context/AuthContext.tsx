@@ -1,46 +1,109 @@
 'use client';
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { AuthData, AuthContextType } from '../types';
 
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from 'react';
+import { AuthData, AuthContextType } from '../types';
+import { api } from '../lib/api';
+
+
+// Заглушки, если useAuth вызывается вне провайдера
+const throwError = () => {
+  throw new Error('useAuth must be used within an AuthProvider');
+};
+
+// Создание контекста с дефолтными значениями-заглушками
 const AuthContext = createContext<AuthContextType>({
   user: null,
   profile: null,
-  setAuth: () => {},
-  logout: () => {},
+  models: [],
+  setAuth: throwError,
+  logout: throwError,
 });
 
-const STORAGE_KEY = 'authData';
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [auth, setAuthState] = useState<AuthData>({
+    user: null,
+    profile: null,
+    models: [],
+  });
+  const [loading, setLoading] = useState(true);
 
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [auth, setAuthState] = useState<AuthData>({ user: null, profile: null });
-
+  // Инициализация сессии
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        setAuthState(parsed);
-      } catch {
-        localStorage.removeItem(STORAGE_KEY);
+    const initSession = async () => {
+      const token =
+        typeof window !== 'undefined'
+          ? localStorage.getItem('accessToken')
+          : null;
+      if (!token) {
+        setAuthState({ user: null, profile: null, models: [] });
+        setLoading(false);
+        return;
       }
-    }
+      try {
+        const user = await api.getCurrentUser();
+        if (!user) {
+          setAuthState({ user: null, profile: null, models: [] });
+          setLoading(false);
+          return;
+        }
+        let profile = await api.getProfile(); // убрано 'creator'
+
+        if (!profile) {
+          profile = null;
+        }
+
+        setAuthState({
+          user,
+          profile,
+        
+        });
+      } catch (error) {
+        console.error('Session initialization failed:', error);
+        setAuthState({ user: null, profile: null, models: [] });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    initSession();
   }, []);
 
-  const setAuth = (data: AuthData) => {
-    setAuthState(data);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  const setAuth = (
+    data: AuthData | ((prev: AuthData) => AuthData)
+  ) => {
+    setAuthState((prev) =>
+      typeof data === 'function' ? data(prev) : data
+    );
   };
 
-  const logout = () => {
-    setAuthState({ user: null, profile: null });
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ user: null, profile: auth.profile }));
+  const logout = async () => {
+    try {
+      await api.logoutUser();
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      setAuthState({ user: null, profile: null, models: [] });
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ ...auth, setAuth, logout }}>
-      {children}
+    <AuthContext.Provider
+      value={{
+        ...auth,
+        setAuth,
+        logout,
+      }}
+    >
+      {!loading && children}
     </AuthContext.Provider>
   );
 };
 
+// Хук для использования контекста авторизации
 export const useAuth = () => useContext(AuthContext);

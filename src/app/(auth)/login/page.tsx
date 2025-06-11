@@ -1,13 +1,12 @@
 'use client';
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { api } from "@/lib/api";
+import { loginUser } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import "../auth.css";
 
 export default function LoginPage() {
-  const router = useRouter();
+
   const { setAuth } = useAuth();
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
@@ -23,42 +22,29 @@ export default function LoginPage() {
     setError("");
 
     try {
-      const user = await api.post("/login", form);
-      const stored = localStorage.getItem("authData");
-      let profile = null;
+      const { user } = await loginUser(form);
+      console.log("Cookies after login:", document.cookie);
 
-      if (stored) {
-        try {
-          const parsed = JSON.parse(stored);
-          profile = parsed.profile || null;
-        } catch {}
-      }
+      setAuth({ user, profile: null, models: [] });
 
-      setAuth({ user, profile });
-
-      switch (user.role) {
-        case "admin":
-          router.push("/admin/profile");
-          break;
-        case "creator":
-          router.push("/creator/profile");
-          break;
-        default:
-          router.push("/user/profile");
-          break;
+      if (user.role === "creator") {
+        window.location.href = "/creator/profile";
+      } else if (user.role === "admin") {
+        window.location.href = "/admin/profile";
+      } else if (user.role === "user") {
+        window.location.href = "/user/profile";
+      } else {
+        window.location.href = "/";
       }
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("Login failed. Try again.");
-      }
+      setError(err instanceof Error ? err.message : "Login failed. Try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  return (
+
+   return (
     <div className="wrapper">
       <form onSubmit={handleSubmit} className="form">
         <h2>Login</h2>

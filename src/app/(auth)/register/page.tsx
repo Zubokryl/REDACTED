@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { api } from "@/lib/api";
+import { registerUser } from "@/lib/api";
 import "../auth.css";
 
 export default function RegisterPage() {
@@ -11,6 +11,7 @@ export default function RegisterPage() {
     name: "",
     email: "",
     password: "",
+    password_confirmation: "",
     role: "user",
   });
   const [loading, setLoading] = useState(false);
@@ -22,11 +23,17 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setError("");
-
+  
+    if (form.password !== form.password_confirmation) {
+      setError("Passwords do not match.");
+      return;
+    }
+  
+    setLoading(true);
+  
     try {
-      await api.post("/register", form);
+      await registerUser(form);
       router.push("/login");
     } catch (err) {
       if (err instanceof Error) {
@@ -63,16 +70,24 @@ export default function RegisterPage() {
           className="input"
           required
         />
-
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={handleChange}
-          className="input"
-          required
-        />
+<input
+  type="password"
+  name="password"
+  placeholder="Password"
+  value={form.password}
+  onChange={handleChange}
+  className="input"
+  required
+/>
+<input
+  type="password"
+  name="password_confirmation"
+  placeholder="Confirm Password"
+  value={form.password_confirmation || ""}
+  onChange={handleChange}
+  className="input"
+  required
+/>
 
         <select
           name="role"

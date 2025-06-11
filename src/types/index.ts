@@ -1,4 +1,3 @@
-
 export interface User {
   id: string;
   role: 'admin' | 'creator' | 'user'; 
@@ -26,7 +25,7 @@ export interface Profile {
   contact: string;
   skills: string;
   software: string[] | string | null;
-  avatar: string;
+  profile_photo_url: string;
   socialLinks: SocialLinks;
 }
 
@@ -34,12 +33,12 @@ export interface Profile {
 export interface AuthData {
   user: User | null;
   profile: Profile | null;
-  
+  models?: ModelForm[];
 }
 
 
 export interface AuthContextType extends AuthData {
-  setAuth: (data: AuthData) => void;
+  setAuth: (data: AuthData | ((prev: AuthData) => AuthData)) => void;
   logout: () => void;
 }
 
@@ -51,31 +50,35 @@ export interface ModelFeatures {
   materials: boolean;
   uvMapping: boolean;
   uvUnwrapped: boolean;
+  rigged: boolean;
+  animated: boolean;
+  uvMapped: boolean;
+
 }
 
 
 export interface ModelForm {
-  id: number;
-  creatorId: string; 
+  id?: number;
   title: string;
-  description: string;
-  category: string;
-  price: number;
-  license: string;
-  printable: boolean;
+  description?: string;
+  category?: string;
+  price?: number | string;
+  license?: string;
+  formats?: string[];     
+  features?: ModelFeatures;
   vertices: number;
-  formats: string[];
-  features: {
-    rigged: boolean;
-    animated: boolean;
-    uvMapped: boolean;
-    pbr: boolean;
-    [key: string]: boolean;
-  };
-  releaseDate: string;
-  tools: string[];
-  model: string;
-  modelURL: string;
+  printable: boolean;
+  tools?: string[];        
+  customizable: boolean;
+  release_date?: string;      
+  creator_id?: number; 
+  created_at?: string;
+  updated_at?: string; 
+  tags?: string[];
+  materials?: string[];
+  model_file: string | File;
+  images?: string[]; 
+  preview_video?: string;          
 }
 
 export const SOFTWARE_OPTIONS = [

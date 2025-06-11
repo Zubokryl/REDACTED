@@ -1,46 +1,48 @@
-
 .container {
-    padding-top: clamp(12rem, 12vw, 10rem);
-    padding: 6rem 0;
+    padding-top: clamp(16rem, 12vw, 10rem);
+    padding: 10rem 0 6rem;
     font-family: 'Open Sans', sans-serif;
     background-color: #111111;
     color: #b9b7b7;
     width: 100vw;
-  }
-  
-  .content {
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+.content {
     max-width: 60rem;
     margin: 0 auto;
-  }
-  
-  .heading {
+    padding: 0 1rem;
+}
+
+.heading {
     font-family: 'Drexia', sans-serif;
     font-size: 3rem;
     margin-bottom: 1rem;
     color: #ff0000;
-  }
-  
-  .profileTop {
+}
+
+.profileTop {
     display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
     gap: 2rem;
     margin-bottom: 2rem;
-  }
-  
-  .profileRow {
+}
+
+.profileRow {
     display: flex;
     flex-direction: row;
     gap: 2rem;
     flex-wrap: wrap;
-  }
-  
-  .profileAboutContainer {
+}
+
+.profileAboutContainer {
     flex: 2;
     min-width: 300px;
-  }
+}
 
-  .section p {
+.section p {
     white-space: pre-wrap;      
     word-wrap: break-word;       
     overflow-wrap: break-word;   
@@ -49,9 +51,9 @@
     font-size: 1rem;
     line-height: 1.5;
     
-  }
-  
-  .profileDetails {
+}
+
+.profileDetails {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
@@ -60,9 +62,9 @@
     max-width: 100%;
     overflow-x: auto;
     box-sizing: border-box;
-  }
-  
-  .avatarWrapper {
+}
+
+.avatarWrapper {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -75,84 +77,84 @@
     background-color: #1c1c1c;
     box-sizing: border-box;
     flex-shrink: 0;
-  }
-  
-  .profilePic {
+}
+
+.profilePic {
     width: 100%;
     height: auto;
     aspect-ratio: 2 / 3;
     object-fit: cover;
     border-radius: 10%;
     display: block;
-  }
-  
-  .profileInfo {
+}
+
+.profileInfo {
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     gap: 0.5rem;
     min-width: 0;
-  }
-  
-  .name {
+}
+
+.name {
     font-size: 1.5rem;
     font-weight: bold;
     color: #ffffff;
-  }
-  
-  .email,
-  .website {
+}
+
+.email,
+.website {
     font-size: 1rem;
     color: #ccc;
-  }
-  
-  .website a {
+}
+
+.website a {
     text-decoration: none;
     color: #ccc;
    
-  }
-  
-  .socialLinks {
+}
+
+.socialLinks {
     margin-top: 1rem;
-  }
-  
-  .socialLinks p {
+}
+
+.socialLinks p {
     font-weight: bold;
     margin-bottom: 0.5rem;
-  }
-  
-  .icons {
+}
+
+.icons {
     display: flex;
     gap: 0.5rem;
     margin-bottom: 1rem;
-  }
-  
-  .editSocials {
+}
+
+.editSocials {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-  }
-  
-  .socialEditRow {
+}
+
+.socialEditRow {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-  }
+}
 
-  .editSocialsGrid {
+.editSocialsGrid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
-  }
-  
-  .socialEditItem {
+}
+
+.socialEditItem {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-  }
-  
-  .storeLink {
+}
+
+.storeLink {
     display: inline-block;
     text-decoration: none;
     font-weight: normal;
@@ -165,15 +167,15 @@
                 0 2px 5px rgba(0, 0, 0, 0.6); 
     transition: all 0.3s ease;
     border: 1px solid #2c2c2c; 
-  }
-  
-  .storeLink:hover {
+}
+
+.storeLink:hover {
     background-color: #2a2a2a; 
     color:#fff6c1;
     box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.15),
                 0 3px 6px rgba(0, 0, 0, 0.7);
-  }
-  .profileButtons {
+}
+.profileButtons {
     display: flex;
     gap: 1rem;
     justify-content: center;
@@ -182,9 +184,9 @@
     font-weight: normal;
     padding: 1rem;
     border-radius: 10px;
-  }
-  
-  .profileButton {
+}
+
+.profileButton {
     background-color: transparent;
     color: #c0c0c0; 
     border: 1px solid #fff6c1; 
@@ -195,45 +197,44 @@
     cursor: pointer;
     transition: all 0.3s ease;
     font-family: 'Open Sans', sans-serif;
-  }
-  
-  .profileButton:hover {
+}
+
+.profileButton:hover {
     background-color: #fff6c1; 
     color: #000; 
-  }
-  
+}
 
-  .iconButton {
+.iconButton {
     background: none;
     border: none;
     cursor: pointer;
     padding: 0;
-  }
-  
-  .section {
+}
+
+.section {
     margin-bottom: 2rem;
     background-color: #202024;
     padding: 1rem;
     border-radius: 8px;
-  }
-  
-  .sectionTitle {
+}
+
+.sectionTitle {
     font-weight: bold;
     font-size: 1.5rem;
     margin-bottom: 0.5rem;
     color: #811818;
-  }
-  
-  .input {
+}
+
+.input {
     width: 100%;
     padding: 0.5rem;
     font-size: 1rem;
     margin-top: 0.5rem;
     border: 1px solid #a99d9d;
     border-radius: 4px;
-  }
-  
-  .textarea {
+}
+
+.textarea {
     width: 100%;
     height: 100px;
     padding: 0.5rem;
@@ -242,32 +243,32 @@
     border: 1px solid #878787;
     border-radius: 4px;
     resize: vertical;
-  }
-  .deleteButton {
+}
+.deleteButton {
     background-color: #111111;
     color: #ff0000;
     padding: 10px 16px;
-    border: none;
+    border: 1px solid #8B0000;
     border-radius: 8px;
     cursor: pointer;
     font-weight: normal;
     transition: background-color 0.2s ease-in-out;
-  }
+}
    
-  .deleteButton:hover {
+.deleteButton:hover {
     background-color: #8B0000; 
     color: #fff;
     border-color: #ff4d4d;
-  }
+}
 
-  .tagsContainer {
+.tagsContainer {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
     margin-top: 0.5rem;
-  }
-  
-  .tag {
+}
+
+.tag {
     background-color: #2c2c2c;
     color: #fff;
     padding: 0.25rem 0.75rem;
@@ -275,32 +276,32 @@
     font-size: 0.9rem;
     font-weight: 500;
     border: 1px solid #555;
-  }
+}
 
-  .softwareCheckboxes {
+.softwareCheckboxes {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
     padding-left: 0.5rem;
-  }
-  
-  .checkboxLabel {
+}
+
+.checkboxLabel {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     font-size: 0.95rem;
     cursor: pointer;
-  }
+}
 
-  .tagsContainer {
+.tagsContainer {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
     margin-top: 0.5rem;
-  }
-  
-  .softwareTag,
-  .skillTag {
+}
+
+.softwareTag,
+.skillTag {
     display: inline-flex;
     align-items: center;
     gap: 0.3rem;
@@ -311,198 +312,206 @@
     font-size: 0.85rem;
     color: #ddd;
     white-space: nowrap;
-  }
-  
-  .softwareTag img {
+}
+
+.softwareTag img {
     display: inline-block;
-  }
+}
 
-  
-
-  @media (max-width: 768px) {
+@media (max-width: 768px) {
     .content {
-      padding: 0 1rem;
-      width: 100%;
-      box-sizing: border-box;
+        padding: 0 1rem;
+        width: 100%;
+        box-sizing: border-box;
     }
-  
+
     .heading {
-      font-size: 2rem;
-      text-align: center;
+        font-size: 2rem;
+        text-align: center;
     }
-  
-  
+
     .profileRow {
-      flex-direction: column;
-      align-items: center;
-      gap: 1.5rem;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
     }
 
     .profileTop {
-      flex-direction: column;
-      align-items: center; 
-      gap: 1.5rem;
+        flex-direction: column;
+        align-items: center; 
+        gap: 1.5rem;
     }
-  
+
     .profileAboutContainer {
-      width: 100%;
-      height: 100px;
-      padding: 0.5rem;
-      font-size: 1rem;
-      margin-top: 0.5rem;
-      border: 1px solid #878787;
-      border-radius: 4px;
-      resize: vertical;
-      float:inherit;
+        width: 100%;
+        height: 100px;
+        padding: 0.5rem;
+        font-size: 1rem;
+        margin-top: 0.5rem;
+        border: 1px solid #878787;
+        border-radius: 4px;
+        resize: vertical;
+        float:inherit;
     }
 
     .profileDetails {
-      display: flex;
-      flex-direction: column;
-      align-items: center;  
-      justify-content: center; 
-      gap: clamp(0.5rem, 2vw, 1.5rem);
-      width: 100%;
-      max-width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;  
+        justify-content: center; 
+        gap: clamp(0.5rem, 2vw, 1.5rem);
+        width: 100%;
+        max-width: 100%;
     }
     .section p {
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-      max-width: 100%;
-      width: 100%;
-      font-size: 1rem;
-      line-height: 1.5;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        max-width: 100%;
+        width: 100%;
+        font-size: 1rem;
+        line-height: 1.5;
     
     }
-  
+
     .avatarWrapper {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      max-width: clamp(8rem, 20vw, 12rem);
-      padding: 0.5rem;
-      margin: 0 auto;
-      border: 0.125rem solid #444;
-      border-radius: 0.75rem;
-      background-color: #1c1c1c;
-      box-sizing: border-box;
-      flex-shrink: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        max-width: clamp(8rem, 20vw, 12rem);
+        padding: 0.5rem;
+        margin: 0 auto;
+        border: 0.125rem solid #444;
+        border-radius: 0.75rem;
+        background-color: #1c1c1c;
+        box-sizing: border-box;
+        flex-shrink: 0;
     }
-  
+
     .profilePic {
-      width: 100%;
-      height: auto;
-      aspect-ratio: 1 / 1;
-      object-fit: cover;
-      border-radius: 10%;
-      display: block;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        border-radius: 10%;
+        display: block;
     }
-  
+
     .profileInfo {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      gap: 0.5rem;
-      min-width: 0;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        gap: 0.5rem;
+        min-width: 0;
     }
-  
+
     .name {
-      font-size: 1.25rem;  
-      font-weight: bold;
-      color: #ffffff;
-      text-align: center;
+        font-size: 1.25rem;  
+        font-weight: bold;
+        color: #ffffff;
+        text-align: center;
     }
-  
+
     .email,
     .website {
-      font-size: 1rem;
-      color: #ccc;
-      text-align: center;  
+        font-size: 1rem;
+        color: #ccc;
+        text-align: center;  
     }
-  
+
     .website a {
-      text-decoration: none;
-      color: #ccc;
+        text-decoration: none;
+        color: #ccc;
     }
-  
+
     .socialLinks {
-      margin-top: 1rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center; 
+        margin-top: 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center; 
     }
-  
+
     .socialLinks p {
-      font-weight: bold;
-      margin-bottom: 0.5rem;
-      text-align: center;  
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        text-align: center;  
     }
-  
+
     .icons {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-      justify-content: center; 
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        justify-content: center; 
     }
-  
+
     .editSocialsGrid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
     }
-  
+
     .socialEditItem {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
     }
-  
+
     .profileButtons {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      margin-top: 1rem;
-      background-color: #000; 
-      font-weight: normal;
-      padding: 1rem;
-      border-radius: 10px;
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 1rem;
+        background-color: #000; 
+        font-weight: normal;
+        padding: 1rem;
+        border-radius: 10px;
     }
-  
+
     .profileButton {
-      background-color: transparent;
-      color: #c0c0c0;
-      border: 1px solid #fff6c1;
-      padding: 0.75rem 1.5rem;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: normal;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-family: 'Open Sans', sans-serif;
+        background-color: transparent;
+        color: #c0c0c0;
+        border: 1px solid #fff6c1;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: normal;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: 'Open Sans', sans-serif;
     }
-  
+
     .profileButton:hover {
-      background-color: #fff6c1;
-      color: #000;
+        background-color: #fff6c1;
+        color: #000;
     }
-  
+
+    .deleteButton {
+        background-color: #111111;
+        color: #ff0000;
+        padding: 10px 16px;
+        border: 1px solid #8B0000;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: normal;
+        transition: background-color 0.2s ease-in-out;
+    }
+
     .tagsContainer {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
     }
-  
+
     .tag {
-      background-color: #2c2c2c;
-      color: #fff;
-      padding: 0.25rem 0.75rem;
-      border-radius: 10px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      border: 1px solid #555;
+        background-color: #2c2c2c;
+        color: #fff;
+        padding: 0.25rem 0.75rem;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        border: 1px solid #555;
     }
-  }
+}

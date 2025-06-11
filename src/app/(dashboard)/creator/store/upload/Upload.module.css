@@ -26,6 +26,12 @@
     display: flex;
     flex-direction: column;
   }
+
+  .checkboxGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
   
   .input,
   .select,

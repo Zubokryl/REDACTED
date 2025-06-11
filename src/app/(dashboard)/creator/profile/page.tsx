@@ -6,6 +6,9 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import type { Profile } from '@/types';
+import { api } from '@/lib/api';
+import { toast } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 const defaultProfile: Profile = {
   name: '',
@@ -14,7 +17,7 @@ const defaultProfile: Profile = {
   contact: '',
   skills: '',
   software: [],
-  avatar: '',
+  profile_photo_url: '',
   socialLinks: {
     Artstation: '',
     Facebook: '',
@@ -35,49 +38,77 @@ const SOFTWARE_OPTIONS = [
   'Maya',
   'Photoshop',
   '3ds Max',
-  'Marmoset Toolbag'
+  'Marmoset Toolbag',
 ];
 
-
 export default function CreatorProfilePage() {
-  const toBase64 = (file: File): Promise<string> =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-
   const { user, profile, setAuth } = useAuth();
   const isOwner = user?.role === 'creator';
   const [modelCount, setModelCount] = useState(0);
-
-  const [profileData, setProfileData] = useState<Profile>(defaultProfile);
+  const [profileData, setProfileData] = useState(profile ?? defaultProfile);
   const [isEditing, setIsEditing] = useState(false);
-
-  useEffect(() => {
-    const userId = user?.id || 'demo-user';
-    const localModels = JSON.parse(localStorage.getItem(`models-${userId}`) || '[]');
-    setModelCount(localModels.length);
-  }, [user]);
+  const [loading, setLoading] = useState(true);
+  const [isUploading, setIsUploading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     if (profile) {
-      setProfileData({
-        ...defaultProfile,
-        ...profile,
-        software: Array.isArray(profile.software)
-          ? profile.software
-          : typeof profile.software === 'string'
-            ? profile.software.split(',').map((s) => s.trim())
-            : [],
-        socialLinks: {
-          ...defaultProfile.socialLinks,
-          ...(profile.socialLinks || {}),
-        },
-      });
+      setProfileData(profile);
     }
   }, [profile]);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchProfile = async () => {
+      try {
+        const data = await api.getProfile();
+        console.log('[fetchProfile] returned data:', data);
+        if (!data || typeof data !== 'object') {
+          throw new Error('Invalid profile data');
+        }
+
+        setProfileData({
+          ...defaultProfile,
+          ...data,
+          software: Array.isArray(data.software)
+            ? data.software
+            : typeof data.software === 'string'
+            ? data.software.split(',').map((s) => s.trim())
+            : [],
+          socialLinks: {
+            ...defaultProfile.socialLinks,
+            ...(typeof data.socialLinks === 'object' && data.socialLinks !== null ? data.socialLinks : {}),
+          },
+        });
+      } catch (error) {
+        console.error('Error loading profile:', error);
+        setProfileData(defaultProfile);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const fetchModelCount = async () => {
+      try {
+        const models = await api.getModels({ creator_id: Number(user.id) });
+        setModelCount(Array.isArray(models) ? models.length : 0);
+      } catch (error: unknown) {
+        const axiosError = error as { response?: { status: number; data: unknown } };
+        if (axiosError?.response) {
+          console.error('Error fetching model count:', axiosError.response.status, axiosError.response.data);
+        } else {
+          console.error('Error fetching model count:', error);
+        }
+        setModelCount(0);
+      }
+    };
+
+    fetchProfile();
+    fetchModelCount();
+  }, [user]);
 
   const handleChange = <T extends keyof Profile>(field: T, value: Profile[T]) => {
     setProfileData((prev) => ({ ...prev, [field]: value }));
@@ -93,17 +124,154 @@ export default function CreatorProfilePage() {
     });
   };
 
-  const handleSave = () => {
-    setAuth({ user, profile: profileData });
-    setIsEditing(false);
-    alert('Profile saved!');
+  const prepareProfilePayload = (profileData: Profile) => ({
+    name: profileData.name,
+    about: profileData.about,
+    experience: profileData.experience,
+    contact: profileData.contact,
+    skills: profileData.skills,
+    software: Array.isArray(profileData.software)
+      ? profileData.software
+      : typeof profileData.software === 'string'
+      ? profileData.software.split(',').map((s) => s.trim())
+      : [],
+    profile_photo_url: profileData.profile_photo_url,
+    socialLinks:
+      profileData.socialLinks && typeof profileData.socialLinks === 'object' && !Array.isArray(profileData.socialLinks)
+        ? profileData.socialLinks
+        : {},
+  });
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      console.log('Selected file:', {
+        name: file.name,
+        type: file.type,
+        size: file.size
+      });
+
+      // Validate file type
+      const validFormats = ["image/jpeg", "image/png", "image/gif"];
+      if (!validFormats.includes(file.type)) {
+        toast.error('Invalid image format. Please use JPEG, PNG or GIF');
+        return;
+      }
+
+      // Validate file size (5MB max)
+      const maxSize = 5 * 1024 * 1024;
+      if (file.size > maxSize) {
+        toast.error('File size should be less than 5MB');
+        return;
+      }
+
+      setSelectedFile(file);
+      const imageUrl = URL.createObjectURL(file);
+      setPreviewUrl(imageUrl);
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      setIsUploading(true);
+      const formData = new FormData();
+      
+      // Add all profile fields
+      formData.append('name', profileData.name || '');
+      formData.append('about', profileData.about || '');
+      formData.append('experience', profileData.experience || '');
+      formData.append('contact', profileData.contact || '');
+      formData.append('skills', profileData.skills || '');
+      
+      // Handle arrays
+      if (Array.isArray(profileData.software)) {
+        profileData.software.forEach((item) => {
+          formData.append('software[]', item);
+        });
+      }
+      
+      if (profileData.socialLinks && typeof profileData.socialLinks === 'object') {
+        Object.entries(profileData.socialLinks).forEach(([key, value]) => {
+          if (value) {
+            formData.append(`socialLinks[${key}]`, value);
+          }
+        });
+      }
+
+      // Handle profile photo
+      if (selectedFile) {
+        console.log('Appending profile photo to FormData:', {
+          name: selectedFile.name,
+          type: selectedFile.type,
+          size: selectedFile.size
+        });
+        formData.append('profile_photo', selectedFile);
+      }
+
+      const updatedProfile = await api.updateProfile(formData);
+      
+      // Update context and state
+      setAuth((prev) => ({
+        ...(prev ?? { user: null, models: [] }),
+        profile: prepareProfilePayload(updatedProfile),
+      }));
+
+      setProfileData(prepareProfilePayload(updatedProfile));
+      setSelectedFile(null);
+      setPreviewUrl(null);
+      setIsEditing(false);
+      toast.success('Profile updated successfully');
+      router.refresh();
+    } catch (error: unknown) {
+      console.error('Error saving profile:', error);
+      toast.error('Failed to update profile');
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleReset = () => {
-    setAuth({ user, profile: null });
-    setProfileData(defaultProfile);
     setIsEditing(false);
+    setSelectedFile(null);
+    setPreviewUrl(null);
+
+    if (user) {
+      api.getProfile().then((data) => {
+        if (data === null) {
+          setProfileData(defaultProfile);
+          return;
+        }
+
+        let softwareArray: string[] = [];
+        if (Array.isArray(data.software)) {
+          softwareArray = data.software;
+        } else if (typeof data.software === 'string') {
+          softwareArray = data.software.split(',').map((s) => s.trim());
+        }
+
+        const socialLinks =
+          data.socialLinks && typeof data.socialLinks === 'object'
+            ? { ...defaultProfile.socialLinks, ...data.socialLinks }
+            : defaultProfile.socialLinks;
+
+        setProfileData({
+          ...defaultProfile,
+          ...data,
+          software: softwareArray,
+          socialLinks,
+        });
+      });
+    }
   };
+
+  const getProfilePhotoUrl = (profile: Profile) => {
+    if (profile.profile_photo_url && !profile.profile_photo_url.includes('ui-avatars.com')) {
+      return profile.profile_photo_url;
+    }
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.name || 'User')}&background=random`;
+  };
+
+  if (loading) return <p>Loading profile...</p>;
 
   return (
     <div className={styles.container}>
@@ -130,24 +298,31 @@ export default function CreatorProfilePage() {
             <div className={styles.profileDetails}>
               <div className={styles.avatarWrapper}>
                 <Image
-                  src={profileData.avatar || '/default-avatar.png'}
+                  src={previewUrl || getProfilePhotoUrl(profileData)}
                   alt="Creator Avatar"
                   width={150}
                   height={150}
                   className={styles.profilePic}
+                  unoptimized={!!previewUrl}
                 />
                 {isOwner && isEditing && (
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={async (e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        const base64 = await toBase64(file);
-                        handleChange('avatar', base64);
-                      }
-                    }}
-                  />
+                  <div className={styles.photoUpload}>
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/gif"
+                      onChange={handleFileSelect}
+                      disabled={isUploading}
+                      className="block w-full text-sm text-gray-500
+                        file:mr-4 file:py-2 file:px-4
+                        file:rounded-full file:border-0
+                        file:text-sm file:font-semibold
+                        file:bg-violet-50 file:text-violet-700
+                        hover:file:bg-violet-100"
+                    />
+                    <p className="mt-1 text-sm text-gray-500">
+                      JPG, PNG or GIF (max. 5MB)
+                    </p>
+                  </div>
                 )}
               </div>
 
@@ -285,7 +460,7 @@ export default function CreatorProfilePage() {
                       className={`${styles.profileButton} ${styles.deleteButton}`}
                       onClick={handleReset}
                     >
-                      Delete Profile
+                      Cancel Changes
                     </button>
                   </div>
                 )}
@@ -294,49 +469,48 @@ export default function CreatorProfilePage() {
           </div>
         </section>
 
-        {[
-  { label: 'Experience', field: 'experience', multiline: true },
-  { label: 'Contact', field: 'contact', type: 'email' },
-  { label: 'Skills', field: 'skills' },
-].map(({ label, field, multiline, type }) => (
-  <section className={styles.section} key={field}>
-    <h3 className={styles.sectionTitle}>{label}</h3>
-    {isOwner && isEditing ? (
-      multiline ? (
-        <textarea
-          className={styles.textarea}
-          value={profileData[field as keyof typeof defaultProfile] as string}
-          onChange={(e) =>
-            handleChange(field as keyof typeof defaultProfile, e.target.value)
-          }
-        />
+       {[
+ { label: 'Experience', field: 'experience', multiline: true, type: 'text' },
+  { label: 'Skills', field: 'skills', type: 'text' },
+].map(({ label, field, multiline, type }) => {
+  const value = (profileData[field as keyof typeof defaultProfile] || '') as string;
+
+  return (
+    <section className={styles.section} key={field}>
+      <h3 className={styles.sectionTitle}>{label}</h3>
+      {isOwner && isEditing ? (
+        multiline ? (
+          <textarea
+            className={styles.textarea}
+            value={value}
+            onChange={(e) => handleChange(field as keyof typeof defaultProfile, e.target.value)}
+          />
+        ) : (
+          <input
+            className={styles.input}
+            type={type || 'text'}
+            value={value}
+            onChange={(e) => handleChange(field as keyof typeof defaultProfile, e.target.value)}
+          />
+        )
+      ) : field === 'skills' ? (
+        <div className={styles.tagsContainer}>
+          {value
+            .split(',')
+            .map((skill) => skill.trim())
+            .filter(Boolean)
+            .map((skill) => (
+              <div key={skill} className={styles.skillTag}>
+                {skill}
+              </div>
+            ))}
+        </div>
       ) : (
-        <input
-          className={styles.input}
-          type={type || 'text'}
-          value={profileData[field as keyof typeof defaultProfile] as string}
-          onChange={(e) =>
-            handleChange(field as keyof typeof defaultProfile, e.target.value)
-          }
-        />
-      )
-    ) : field === 'skills' ? (
-      <div className={styles.tagsContainer}>
-        {(profileData.skills as string)
-          .split(',')
-          .map((skill) => skill.trim())
-          .filter(Boolean)
-          .map((skill, index) => (
-            <div key={index} className={styles.skillTag}>
-              {skill}
-            </div>
-          ))}
-      </div>
-    ) : (
-      <p>{profileData[field as keyof typeof defaultProfile] as string}</p>
-    )}
-  </section>
-))}
+        <p>{value}</p>
+      )}
+    </section>
+  );
+})}
 
 <section className={styles.section}>
   <h3 className={styles.sectionTitle}>Software</h3>
