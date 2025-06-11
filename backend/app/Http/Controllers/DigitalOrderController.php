@@ -21,7 +21,7 @@ class DigitalOrderController extends Controller
 
             $model = Model3D::findOrFail($validated['model_id']);
             
-            // Проверяем, не купил ли уже пользователь эту модель
+            // Check if user has already purchased this model
             $existingOrder = DigitalOrder::where('user_id', Auth::id())
                 ->where('model_id', $model->id)
                 ->where('status', 'completed')
@@ -34,7 +34,7 @@ class DigitalOrderController extends Controller
                 ], 400);
             }
 
-            // Создаем заказ
+            // Create order
             $order = DigitalOrder::create([
                 'user_id' => Auth::id(),
                 'model_id' => $model->id,
@@ -43,8 +43,8 @@ class DigitalOrderController extends Controller
                 'status' => 'pending'
             ]);
 
-            // TODO: Здесь должна быть интеграция с платежной системой
-            // После успешной оплаты:
+            // TODO: Payment system integration should be here
+            // After successful payment:
             $order->status = 'completed';
             $order->save();
 
@@ -89,7 +89,7 @@ class DigitalOrderController extends Controller
                 ], 404);
             }
 
-            // Увеличиваем счетчик загрузок
+            // Increment download counter
             $order->incrementDownloadCount();
 
             return response()->download($filePath, $model->title . '.' . pathinfo($model->model_file, PATHINFO_EXTENSION));

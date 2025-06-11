@@ -17,7 +17,7 @@ class ProfileController extends Controller
         if (is_string($software)) {
             $software = array_map('trim', explode(',', $software));
         } elseif (is_array($software)) {
-            // ничего не делаем
+            // do nothing
         } elseif (is_null($software)) {
             $software = [];
         } else {
@@ -134,7 +134,7 @@ class ProfileController extends Controller
         \Log::info('Request content type:', ['content_type' => $request->header('Content-Type')]);
         \Log::info('Request method:', ['method' => $request->method()]);
 
-        // Получаем все данные из запроса
+        // Get all data from request
         $input = $request->all();
         \Log::info('All input data:', $input);
 

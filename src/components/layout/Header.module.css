@@ -114,27 +114,27 @@
     .nav {
       display: none;
       flex-direction: column;
-      justify-content: center; /* Центровка по вертикали */
-      align-items: center; /* Центровка по горизонтали */
+      justify-content: center; /* Vertical centering */
+      align-items: center; /* Horizontal centering */
       position: fixed;
       top: 0;
       left: 0;
-      width: 100vw;  /* Занимает всю ширину экрана */
-      height: 100vh; /* Занимает всю высоту экрана */
-      background-color: #000000; /* Черный непрозрачный фон */
+      width: 100vw;  /* Takes full screen width */
+      height: 100vh; /* Takes full screen height */
+      background-color: #000000; /* Black opaque background */
       gap: 2.5rem;
       z-index: 100;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.3s ease, transform 0.3s ease;
-      transform: translateX(-100%); /* Начальное состояние меню за пределами экрана */
+      transform: translateX(-100%); /* Initial menu state outside screen */
     }
   
     .navOpen {
       display: flex;
       opacity: 1;
       pointer-events: auto;
-      transform: translateX(0); /* Меню открывается */
+      transform: translateX(0); /* Menu opens */
     }
   
     .link {

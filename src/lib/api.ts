@@ -167,7 +167,7 @@ export const updateProfile = async (
       console.log(`${key}:`, value);
     }
 
-    // Для PUT запросов с FormData используем POST с _method=PUT
+    // For PUT requests with FormData use POST with _method=PUT
     data.append('_method', 'PUT');
     return makeRequest<Profile>('post', '/profile', data, {
       headers: {

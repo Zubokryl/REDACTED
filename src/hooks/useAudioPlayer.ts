@@ -5,7 +5,7 @@ export function useAudioPlayer(src: string) {
   const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return; // проверка на клиент
+    if (typeof window === 'undefined') return; // client-side check
     audioRef.current = new Audio(src);
 
     const audio = audioRef.current;

@@ -27,11 +27,11 @@ class AuthController extends Controller
 
         $user = User::create($validated);
 
-        // Auth::login($user); // <-- закомментировано, не нужен вход через сессию
+        // Auth::login($user); // <-- commented out, no need for session login
 
         $user->sendEmailVerificationNotification();
 
-        // $cookie = cookie('XSRF-TOKEN', csrf_token(), 60 * 24); // <-- закомментировано, не нужна кука XSRF-TOKEN
+        // $cookie = cookie('XSRF-TOKEN', csrf_token(), 60 * 24); // <-- commented out, no need for XSRF-TOKEN cookie
 
         return response()->json([
             'message' => 'Successfully registered',
@@ -40,29 +40,29 @@ class AuthController extends Controller
     }
 
     public function login(Request $request)
-{
-    $fields = $request->validate([
-        'email' => 'required|email',
-        'password' => 'required|string',
-    ]);
+    {
+        $fields = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
 
-    $user = \App\Models\User::where('email', $fields['email'])->first();
+        $user = \App\Models\User::where('email', $fields['email'])->first();
 
-    if (!$user || !\Illuminate\Support\Facades\Hash::check($fields['password'], $user->password)) {
-        throw ValidationException::withMessages([
-            'email' => ['The provided credentials are incorrect.'],
+        if (!$user || !\Illuminate\Support\Facades\Hash::check($fields['password'], $user->password)) {
+            throw ValidationException::withMessages([
+                'email' => ['The provided credentials are incorrect.'],
+            ]);
+        }
+
+        // Create Sanctum token
+        $token = $user->createToken('API Token')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Successfully logged in',
+            'token' => $token,
+            'user' => $user->only(['id', 'name', 'email', 'role', 'profile_photo_url']),
         ]);
     }
-
-    // Создаём токен Sanctum
-    $token = $user->createToken('API Token')->plainTextToken;
-
-    return response()->json([
-        'message' => 'Successfully logged in',
-        'token' => $token,
-        'user' => $user->only(['id', 'name', 'email', 'role', 'profile_photo_url']),
-    ]);
-}
 
     public function logout(Request $request)
     {

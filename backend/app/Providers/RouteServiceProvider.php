@@ -16,12 +16,12 @@ class RouteServiceProvider extends ServiceProvider
     {
         parent::boot();
 
-        // Обертка для api.php с middleware 'api'
+        // Wrapper for api.php with 'api' middleware
         Route::prefix('api')
             ->middleware('api')
             ->group(base_path('routes/api.php'));
 
-        // Если нужно, добавьте web.php
+        // Add web.php if needed
         Route::middleware('web')
             ->group(base_path('routes/web.php'));
 

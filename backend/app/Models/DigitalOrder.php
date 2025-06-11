@@ -22,7 +22,7 @@ class DigitalOrder extends Model
         'price' => 'decimal:2'
     ];
 
-    // Отношения
+    // Relationships
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -33,7 +33,7 @@ class DigitalOrder extends Model
         return $this->belongsTo(Model3D::class, 'model_id');
     }
 
-    // Методы
+    // Methods
     public function canDownload(): bool
     {
         return $this->status === 'completed' && 

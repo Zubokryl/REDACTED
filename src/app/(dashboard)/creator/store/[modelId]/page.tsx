@@ -45,7 +45,7 @@ export default function ModelDetailsPage() {
   return (
     <div className={styles.container}>
       <div className={styles.contentWrapper}>
-        {/* Левая колонка */}
+        {/* Left column */}
         <div className={styles.leftColumn}>
           <div className={styles.modelPreview}>
             {model.model_file && (
@@ -59,7 +59,7 @@ export default function ModelDetailsPage() {
             )}
           </div>
 
-          {/* Category и Price */}
+          {/* Category and Price */}
           <div className={styles.row}>
             <div className={styles.field}>
               <span className={styles.label}>Category</span>
@@ -77,7 +77,7 @@ export default function ModelDetailsPage() {
             </div>
           </div>
 
-          {/* Кнопки */}
+          {/* Buttons */}
           <div className={styles.row}>
             <div className={styles.buttonGroup}>
               <button
@@ -97,7 +97,7 @@ export default function ModelDetailsPage() {
             </div>
           </div>
 
-          {/* Остальные поля */}
+          {/* Other fields */}
           <div className={styles.gridFields}>
             <div className={styles.field}>
               <span className={styles.label}>Uploaded Formats</span>
@@ -152,7 +152,7 @@ export default function ModelDetailsPage() {
           </div>
         </div>
 
-        {/* Правая колонка */}
+        {/* Right column */}
         <div className={styles.titleColumn}>
           <div className={styles.field}>
             <span className={styles.label}>Model Title</span>

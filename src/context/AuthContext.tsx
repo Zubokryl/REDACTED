@@ -11,12 +11,12 @@ import { AuthData, AuthContextType } from '../types';
 import { api } from '../lib/api';
 
 
-// Заглушки, если useAuth вызывается вне провайдера
+// Stubs if useAuth is called outside provider
 const throwError = () => {
   throw new Error('useAuth must be used within an AuthProvider');
 };
 
-// Создание контекста с дефолтными значениями-заглушками
+// Create context with default stub values
 const AuthContext = createContext<AuthContextType>({
   user: null,
   profile: null,
@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   });
   const [loading, setLoading] = useState(true);
 
-  // Инициализация сессии
+  // Session initialization
   useEffect(() => {
     const initSession = async () => {
       const token =
@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setLoading(false);
           return;
         }
-        let profile = await api.getProfile(); // убрано 'creator'
+        let profile = await api.getProfile(); // removed 'creator'
 
         if (!profile) {
           profile = null;
@@ -105,5 +105,5 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// Хук для использования контекста авторизации
+// Hook for using auth context
 export const useAuth = () => useContext(AuthContext);

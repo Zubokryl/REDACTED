@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Validator;
 
 class ModelController extends Controller
 {
-    // Получить список моделей текущего пользователя
+    // Get list of current user's models
     public function index(Request $request)
     {
         \Log::info('=== MODELS INDEX REQUEST ===');
@@ -18,11 +18,11 @@ class ModelController extends Controller
 
         $query = Model3D::query();
 
-        // Если передан creator_id в параметрах запроса — фильтруем по нему
+        // If creator_id is passed in request parameters - filter by it
         if ($request->has('creator_id')) {
             $query->where('creator_id', $request->input('creator_id'));
         } else {
-            // Иначе — если пользователь авторизован, возвращаем только его модели
+            // Otherwise - if user is authenticated, return only their models
             $user = $request->user();
             if ($user) {
                 $query->where('creator_id', $user->id);
@@ -35,7 +35,7 @@ class ModelController extends Controller
         return response()->json($models);
     }
 
-    // Получить одну модель по id
+    // Get one model by id
     public function show($id)
     {
         $model = Model3D::findOrFail($id);
@@ -57,7 +57,7 @@ class ModelController extends Controller
             ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     }
 
-    // Создать новую модель
+    // Create new model
     public function store(Request $request)
     {
         try {
@@ -255,7 +255,7 @@ class ModelController extends Controller
         }
     }
 
-    // Обновить модель
+    // Update model
     public function update(Request $request, $id)
     {
         $user = $request->user();
@@ -289,7 +289,7 @@ class ModelController extends Controller
         return response()->json($model);
     }
 
-    // Удалить модель
+    // Delete model
     public function destroy(Request $request, $id)
     {
         $user = $request->user();

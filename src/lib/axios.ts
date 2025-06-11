@@ -9,7 +9,7 @@ export const axiosClient = axios.create({
   withCredentials: true
 });
 
-// Добавляем токен в каждый запрос
+// Add token to each request
 axiosClient.interceptors.request.use(
   (config) => {
     if (typeof window !== "undefined") {
@@ -23,12 +23,12 @@ axiosClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Обработка ответов
+// Response handling
 axiosClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (error.response?.status === 401) {
-      // Токен истек или недействителен
+      // Token expired or invalid
       localStorage.removeItem("accessToken");
       window.location.href = "/login";
     }
