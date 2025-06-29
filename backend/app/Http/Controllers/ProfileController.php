@@ -17,7 +17,6 @@ class ProfileController extends Controller
         if (is_string($software)) {
             $software = array_map('trim', explode(',', $software));
         } elseif (is_array($software)) {
-            // do nothing
         } elseif (is_null($software)) {
             $software = [];
         } else {
@@ -32,7 +31,11 @@ class ProfileController extends Controller
             'contact' => $user->contact ?? '',
             'skills' => $user->skills ?? '',
             'software' => $software,
-            'profile_photo_url' => $user->profile_photo_url ?? '',
+            'profile_photo_url' => $user->profile_photo_url 
+    ? (str_starts_with($user->profile_photo_url, 'http') 
+        ? $user->profile_photo_url 
+        : asset('storage/' . ltrim($user->profile_photo_url, '/')))
+    : '',
             'socialLinks' => json_decode($user->social_links ?? '{}', true),
         ];
 
@@ -81,29 +84,25 @@ class ProfileController extends Controller
             'id' => $user->id,
             'name' => $user->name,
             'about' => 'Admin user profile info',
-            'experience' => '',
             'contact' => $user->email,
-            'skills' => '',
-            'software' => [],
             'profile_photo_url' => '',
-            'socialLinks' => [],
         ]);
     }
 
-    protected function getUserProfile($user)
-    {
-        return response()->json([
-            'id' => $user->id,
-            'name' => $user->name,
-            'about' => 'Regular user profile info',
-            'experience' => '',
-            'contact' => $user->email,
-            'skills' => '',
-            'software' => [],
-            'profile_photo_url' => '',
-            'socialLinks' => [],
-        ]);
-    }
+protected function getUserProfile($user)
+{
+    return response()->json([
+        'name' => $user->name,
+        'about' => $user->about ?? '',
+        'contact' => $user->contact ?? '',
+        'profile_photo_url' => $user->profile_photo_url
+            ? (str_starts_with($user->profile_photo_url, 'http')
+                ? $user->profile_photo_url
+                : asset('storage/' . ltrim($user->profile_photo_url, '/')))
+            : '',
+        'socialLinks' => json_decode($user->social_links ?? '{}', true),
+    ]);
+}
 
     public function updateProfile(Request $request)
     {
@@ -118,11 +117,47 @@ class ProfileController extends Controller
                 return $this->updateCreatorProfile($request, $user);
             case 'admin':
                 return response()->json(['message' => 'Admin profile editing not allowed'], 403);
-            case 'user':
-            default:
-                return response()->json(['message' => 'User profile editing not allowed'], 403);
+                 case 'user':
+        default:
+            return $this->updateUserProfile($request, $user);
+    }
+    }
+protected function updateUserProfile(Request $request, $user)
+{
+    $data = $request->validate([
+        'name' => 'required|string|max:255',
+        'about' => 'nullable|string',
+        'contact' => 'nullable|string',
+        'profile_photo' => 'nullable|file|image|max:2048',
+    ]);
+
+    $user->name = $data['name']; 
+    $user->about = $data['about'] ?? $user->about;
+    $user->contact = $data['contact'] ?? $user->contact;
+
+    // Handle profile photo if present
+    if ($request->hasFile('profile_photo')) {
+        $file = $request->file('profile_photo');
+        if ($file->isValid()) {
+
+            // Delete old photo if exists
+            if ($user->profile_photo_url) {
+                $oldPath = str_replace(asset('storage/'), '', $user->profile_photo_url);
+                if (Storage::disk('public')->exists($oldPath)) {
+                    Storage::disk('public')->delete($oldPath);
+                }
+            }
+            $filename = 'profile_photos/' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('profile_photos', basename($filename), 'public');
+
+            $user->profile_photo_path = $path;
         }
     }
+
+    $user->save();
+
+    return $this->getUserProfile($user);
+}
 
     protected function updateCreatorProfile(Request $request, $user)
     {
@@ -214,7 +249,7 @@ class ProfileController extends Controller
                 }
 
                 // Update user profile
-                $user->profile_photo_url = asset('storage/' . $path);
+                $user->profile_photo_path = $path;
                 
                 \Log::info('Profile photo saved successfully:', [
                     'filename' => $filename,

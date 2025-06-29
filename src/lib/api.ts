@@ -1,5 +1,5 @@
 import { axiosClient } from "./axios";
-import type { User, ModelForm, Profile } from "@/types";
+import type { User, ModelForm, Profile, DigitalOrder } from "@/types";
 import { AxiosError, isAxiosError } from "axios";
 import { toast } from "react-hot-toast";
 
@@ -17,36 +17,22 @@ const makeRequest = async <T>(
   try {
     console.log(`[makeRequest] ${method.toUpperCase()} ${url}`);
     
-    // Log FormData contents if it's FormData
     if (data instanceof FormData) {
       console.log('FormData contents in makeRequest:');
       for (const [key, value] of data.entries()) {
         if (value instanceof File) {
-          console.log(`${key}:`, {
-            name: value.name,
-            type: value.type,
-            size: value.size,
-            lastModified: value.lastModified
-          });
+          console.log(`${key}: { name: ${value.name}, type: ${value.type}, size: ${value.size} }`);
         } else {
-          console.log(`${key}:`, value);
+          console.log(`${key}: ${value}`);
         }
       }
     } else {
       console.log(`[makeRequest] data:`, data);
     }
 
-    // Don't set Content-Type for FormData, let the browser set it with the boundary
     const headers = data instanceof FormData
-      ? {
-          'Accept': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest',
-        }
-      : {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest',
-        };
+      ? { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+      : { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' };
 
     const response = await axiosClient({
       method,
@@ -56,60 +42,43 @@ const makeRequest = async <T>(
       ...config,
     });
 
-    console.log(`[makeRequest] response:`, response.data);
+    console.log(`[makeRequest] response status: ${response.status}`);
+    console.log(`[makeRequest] response data:`, response.data);
     return response.data;
-  } catch (error) {
-    // Log the raw error first
-    console.error('Raw error:', error);
 
-    // Try to extract more information from the error
+  } catch (error) {
+    console.error('[makeRequest] Request failed:', error);
+
     if (error instanceof Error) {
-      console.error('Error details:', {
+      console.error('[makeRequest] Error details:', {
         name: error.name,
         message: error.message,
-        stack: error.stack
+        stack: error.stack,
       });
     }
 
     const axiosError = error as AxiosError;
-    
-    // Log request configuration
-    console.error('Request config:', {
+
+    console.error('[makeRequest] Request config:', {
       url: axiosError.config?.url,
       method: axiosError.config?.method,
       headers: axiosError.config?.headers,
-      data: axiosError.config?.data
+      data: axiosError.config?.data,
     });
 
-    // Log response details if available
     if (axiosError.response) {
-      console.error('Response details:', {
+      console.error('[makeRequest] Response error details:', {
         status: axiosError.response.status,
         statusText: axiosError.response.statusText,
         headers: axiosError.response.headers,
-        data: axiosError.response.data
+        data: axiosError.response.data,
       });
-    }
-
-    // Log network error details if available
-    if (axiosError.code === 'ERR_NETWORK') {
-      console.error('Network error occurred. Please check your connection and server status.');
-    }
-
-    // Extract validation errors if they exist
-    const errorData = axiosError.response?.data;
-    if (errorData && typeof errorData === 'object') {
-      if ('errors' in errorData) {
-        console.error('Validation errors:', errorData.errors);
-      }
-      if ('message' in errorData) {
-        console.error('Server error message:', errorData.message);
-      }
     }
 
     throw axiosError;
   }
 };
+
 
 export const registerUser = async (data: {
   name: string;
@@ -286,6 +255,44 @@ export const getModels = async (params?: { creator_id?: number }): Promise<Model
   }
 };
 
+
+// Получить список заказов текущего пользователя
+export const getUserOrders = async (): Promise<DigitalOrder[]> => {
+  return makeRequest<DigitalOrder[]>("get", "/orders");
+};
+
+// Получить один заказ по ID
+export const getOrderById = async (orderId: number): Promise<DigitalOrder> => {
+  return makeRequest<DigitalOrder>("get", `/orders/${orderId}`);
+};
+
+// Оформить заказ (покупка модели)
+export const createOrder = async (data: {
+  model_id: number;
+  license_type: "personal" | "commercial" | "enterprise";
+}): Promise<{
+  message: string;
+  order: DigitalOrder;
+}> => {
+  return makeRequest("post", "/orders", data);
+};
+
+// Скачать файл модели по заказу
+export const downloadOrder = async (orderId: number): Promise<Blob> => {
+  const response = await axiosClient.get(`/orders/${orderId}/download`, {
+    responseType: "blob",
+    headers: {
+      Accept: "application/json",
+      "X-Requested-With": "XMLHttpRequest",
+    },
+  });
+
+  return response.data;
+};
+
+
+
+
 export const forgotPassword = async (data: { email: string }): Promise<{ status: string }> => {
   return makeRequest<{ status: string }>("post", "/forgot-password", data);
 };
@@ -318,6 +325,10 @@ export const api = {
   resetPassword,
   verifyEmail,
   getCurrentUser,
+  getUserOrders,
+  getOrderById,
+  createOrder,
+  downloadOrder
 };
 
 export { makeRequest };

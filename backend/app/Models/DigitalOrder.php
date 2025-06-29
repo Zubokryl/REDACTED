@@ -13,14 +13,15 @@ class DigitalOrder extends Model
         'price',
         'license_type',
         'status',
-        'downloaded_at',
+        'created_at',
         'download_count'
     ];
 
     protected $casts = [
-        'downloaded_at' => 'datetime',
+        'created_at' => 'datetime',
         'price' => 'decimal:2'
     ];
+
 
     // Relationships
     public function user(): BelongsTo

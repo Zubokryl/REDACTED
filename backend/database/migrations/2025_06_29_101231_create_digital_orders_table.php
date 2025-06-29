@@ -6,23 +6,29 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::create('digital_orders', function (Blueprint $table) {
             $table->id();
+
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('model_id')->constrained('model3ds')->onDelete('cascade');
-            $table->decimal('price', 10, 2);
-            $table->string('license_type'); // personal, commercial, etc.
-            $table->string('status')->default('pending'); // pending, completed, refunded
+            $table->foreignId('model_id')->constrained('models')->onDelete('cascade');
+
+            $table->decimal('price', 8, 2);
+            $table->enum('license_type', ['personal', 'commercial', 'enterprise']);
+            $table->enum('status', ['pending', 'completed', 'failed'])->default('pending');
+
+            $table->unsignedInteger('download_count')->default(0);
             $table->timestamp('downloaded_at')->nullable();
-            $table->integer('download_count')->default(0);
+
             $table->timestamps();
+
+            $table->index(['user_id', 'model_id']);
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('digital_orders');
     }
-}; 
+};

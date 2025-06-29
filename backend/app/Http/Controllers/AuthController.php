@@ -27,7 +27,7 @@ class AuthController extends Controller
 
         $user = User::create($validated);
 
-        // Auth::login($user); // <-- commented out, no need for session login
+        // Auth::login($user); 
 
         $user->sendEmailVerificationNotification();
 
@@ -54,7 +54,7 @@ class AuthController extends Controller
             ]);
         }
 
-        // Create Sanctum token
+      
         $token = $user->createToken('API Token')->plainTextToken;
 
         return response()->json([

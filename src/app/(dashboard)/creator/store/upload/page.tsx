@@ -39,6 +39,7 @@ const initialForm: ModelForm = {
   license: 'Standard License',
   customizable: false,
   model_file: '',  
+  preview_file: undefined
 };
 
 const toolOptions = [
@@ -54,7 +55,7 @@ const toolOptions = [
   'Unreal Engine',
 ];
 
-const formatList = ['.fbx', '.obj', '.glb'];
+const formatList = ['.fbx', '.obj', '.glb', '.png', '.jpg', '.jpeg']; 
 
 export default function UploadModelPage() {
   const { user } = useAuth();
@@ -66,6 +67,9 @@ export default function UploadModelPage() {
   const [modelPreviewURL, setModelPreviewURL] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const [previewImageURL, setPreviewImageURL] = useState<string | null>(null);
+  const [previewImageFile, setPreviewImageFile] = useState<File | null>(null);
+
   if (!user) {
     return <div className={styles.loading}>Loading...</div>;
   }
@@ -76,6 +80,23 @@ export default function UploadModelPage() {
     const { name, type } = e.target;
     const value = 'value' in e.target ? e.target.value : '';
     const checked = 'checked' in e.target ? e.target.checked : false;
+
+    if (type === 'file' && name === 'preview_image') {
+  const file = (e.target as HTMLInputElement).files?.[0];
+  if (file) {
+    const validImageExtensions = ['.png', '.jpg', '.jpeg'];
+    const fileExt = file.name.slice(file.name.lastIndexOf('.')).toLowerCase();
+
+    if (!validImageExtensions.includes(fileExt)) {
+      toast.error('Invalid preview image type. Only PNG/JPEG allowed.');
+      return;
+    }
+
+    setPreviewImageFile(file);
+    setPreviewImageURL(URL.createObjectURL(file));
+  }
+  return;
+}
 
     // Handle file input
     if (type === 'file' && 'files' in e.target) {
@@ -158,21 +179,20 @@ export default function UploadModelPage() {
     }
 
     // Get file from input
-    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-    if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
-        toast.error('Please select a 3D model file to upload');
-        return;
-    }
+  if (!form.model_file) {
+    toast.error('Please select a 3D model file to upload');
+    return;
+}
 
-    const file = fileInput.files[0];
-    console.log('Selected file details:', {
-        name: file.name,
-        type: file.type,
-        size: file.size,
-        lastModified: file.lastModified,
-        isFile: file instanceof File,
-        constructor: file.constructor.name
-    });
+const file = form.model_file as File;
+console.log('Selected file details?', {
+    name: file.name,
+    type: file.type,
+    size: file.size,
+    lastModified: file.lastModified,
+    isFile: file instanceof File,
+    constructor: file.constructor.name
+});
 
     // Validate file size (5GB max)
     const maxSize = 5 * 1024 * 1024 * 1024; // 5GB
@@ -195,6 +215,10 @@ export default function UploadModelPage() {
 
         // Append file first with the correct field name
         formData.append('model_file', file);
+
+        if (previewImageFile) {
+        formData.append('preview_image', previewImageFile);
+}
 
         // Show upload progress
         toast.loading('Uploading model...', { id: 'upload' });
@@ -294,6 +318,8 @@ export default function UploadModelPage() {
               placeholder="e.g. Futuristic Spaceship"
             />
           </div>
+
+
 
           <div className={styles.field}>
             <span className={styles.label}>Description</span>
@@ -423,6 +449,23 @@ export default function UploadModelPage() {
               </select>
             </div>
           </div>
+
+          <div className={styles.field}>
+  <span className={styles.label}>Upload Preview Image (PNG/JPEG)</span>
+  <input
+    type="file"
+    className={styles.input}
+    accept=".png, .jpg, .jpeg"
+    name="preview_image"
+    onChange={handleChange}
+  />
+</div>
+{previewImageURL && (
+  <div className={styles.previewBlock}>
+    <h3 className={styles.label}>Preview Image</h3>
+    <img src={previewImageURL} alt="Preview" className={styles.previewImage} />
+  </div>
+)}
 
           <div className={styles.field}>
             <span className={styles.label}>Upload 3D Model</span>

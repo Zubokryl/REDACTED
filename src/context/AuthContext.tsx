@@ -20,6 +20,7 @@ const throwError = () => {
 const AuthContext = createContext<AuthContextType>({
   user: null,
   profile: null,
+  userProfile: null,
   models: [],
   setAuth: throwError,
   logout: throwError,
@@ -29,6 +30,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [auth, setAuthState] = useState<AuthData>({
     user: null,
     profile: null,
+    userProfile: null,
     models: [],
   });
   const [loading, setLoading] = useState(true);
@@ -41,46 +43,49 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           ? localStorage.getItem('accessToken')
           : null;
       if (!token) {
-        setAuthState({ user: null, profile: null, models: [] });
+        setAuthState({ user: null, profile: null, userProfile: null, models: [] });
         setLoading(false);
         return;
       }
       try {
         const user = await api.getCurrentUser();
         if (!user) {
-          setAuthState({ user: null, profile: null, models: [] });
+          setAuthState({ user: null, profile: null, userProfile: null, models: [] });
           setLoading(false);
           return;
         }
+
         let profile = await api.getProfile(); // removed 'creator'
 
         if (!profile) {
           profile = null;
         }
 
-        setAuthState({
-          user,
-          profile,
-        
-        });
-      } catch (error) {
-        console.error('Session initialization failed:', error);
-        setAuthState({ user: null, profile: null, models: [] });
-      } finally {
-        setLoading(false);
-      }
-    };
+        // Обновляем auth, НЕ затирая другие поля
+      setAuthState((prev) => ({
+        ...prev,
+        user,
+        profile: user.role === 'creator' ? profile : null,
+        userProfile: user.role === 'user' ? profile : null,
+      }));
+    } catch (error) {
+      console.error('Session initialization failed:', error);
+      setAuthState({ user: null, profile: null, userProfile: null, models: [] });
+    } finally {
+      setLoading(false);
+    }
+  };
 
     initSession();
   }, []);
 
-  const setAuth = (
-    data: AuthData | ((prev: AuthData) => AuthData)
-  ) => {
-    setAuthState((prev) =>
-      typeof data === 'function' ? data(prev) : data
-    );
-  };
+const setAuth = (
+  data: AuthData | ((prev: AuthData) => AuthData)
+) => {
+  setAuthState((prev) =>
+    typeof data === 'function' ? data(prev) : { ...prev, ...data }
+  );
+}
 
   const logout = async () => {
     try {
@@ -88,7 +93,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
-      setAuthState({ user: null, profile: null, models: [] });
+      setAuthState({ user: null, profile: null, userProfile: null, models: [] });
     }
   };
 

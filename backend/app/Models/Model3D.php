@@ -29,7 +29,7 @@ class Model3D extends Model
         'customizable',
         'release_date',
         'model_file',
-        'images',
+        'preview_image',
         'preview_video',
     ];
 
@@ -47,12 +47,17 @@ class Model3D extends Model
         'price' => 'float',
     ];
 
-    protected $appends = ['model_file_url'];
+    protected $appends = ['model_file_url', 'preview_image_url']; 
 
     public function getModelFileUrlAttribute()
     {
         return $this->model_file ? asset('storage/' . $this->model_file) : null;
     }
+
+    public function getPreviewImageUrlAttribute()
+{
+    return $this->preview_image ? asset('storage/previews/' . $this->preview_image) : null;
+}
 
     public function creator()
     {

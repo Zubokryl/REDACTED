@@ -15,10 +15,18 @@ export default function ModelDetailsPage() {
   const params = useParams();
   const modelId = Number(params?.modelId);
   const { user } = useAuth();
+  const [purchaseStatus, setPurchaseStatus] = useState<string | null>(null);
 
   const [model, setModel] = useState<ModelForm | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const handleBuyModel = () => {
+  setPurchaseStatus('Processing your order...')
+  // Simulating API call
+  setTimeout(() => {
+    setPurchaseStatus('Order successfully placed! (Mock)')
+  }, 1000);
+};
 
   useEffect(() => {
     if (!user) {
@@ -39,8 +47,6 @@ export default function ModelDetailsPage() {
   if (loading) return <div className={styles.container}>Loading...</div>;
   if (error) return <div className={styles.container}>{error}</div>;
   if (!model) return <div className={styles.container}>Model not found.</div>;
-
-  const isCreator = user?.id === String(model.creator_id);
 
   return (
     <div className={styles.container}>
@@ -77,25 +83,6 @@ export default function ModelDetailsPage() {
             </div>
           </div>
 
-          {/* Buttons */}
-          <div className={styles.row}>
-            <div className={styles.buttonGroup}>
-              <button
-                className={styles.buttonBackToStore}
-                onClick={() => router.push('/creator/store')}
-              >
-                Back to Store
-              </button>
-              {isCreator && (
-                <button
-                  className={styles.buttonEditModel}
-                  onClick={() => router.push(`/creator/store/upload?modelId=${modelId}`)}
-                >
-                  Edit Model
-                </button>
-              )}
-            </div>
-          </div>
 
           {/* Other fields */}
           <div className={styles.gridFields}>
@@ -152,18 +139,33 @@ export default function ModelDetailsPage() {
           </div>
         </div>
 
-        {/* Right column */}
-        <div className={styles.titleColumn}>
-          <div className={styles.field}>
-            <span className={styles.label}>Model Title</span>
-            <div>{model.title}</div>
-          </div>
-          <div className={styles.field}>
-            <span className={styles.label}>Description</span>
-            <p>{model.description ?? '-'}</p>
-          </div>
-        </div>
+    {/* Right column */}
+<div className={styles.titleColumn}>
+  <div className={styles.field}>
+    <span className={styles.label}>
+      Model Title
+    </span>
+    <div>{model.title}</div>
+  </div>
+  <div className={styles.field}>
+    <span className={styles.label}>
+      Description
+    </span>
+    <p>{model.description ?? '-'}</p>
+  </div>
+
+  {/* Mock "Buy Model" button */}
+  <div className={styles.field}>
+      <button
+        onClick={handleBuyModel}
+        className={styles.buyBtn}>
+        Buy Model
+      </button>
+      {purchaseStatus && <div>{purchaseStatus}</div>}
+         </div>
       </div>
     </div>
-  );
-}
+  </div>
+
+)
+};

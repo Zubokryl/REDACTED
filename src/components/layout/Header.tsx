@@ -32,12 +32,13 @@ export default function Header() {
     <div className={styles.topRow}>
       <Link href="/" className={styles.logoLink}>
         <Image
-          src="/LOGO.png"
+          src="/LOGO V2 small white.png"
           alt="Logo"
           width={260}
           height={120}
           className={styles.logo}
           priority
+          unoptimized
         />
       </Link>
     </div>

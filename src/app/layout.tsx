@@ -29,14 +29,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased layout-body`}
       >
         <AuthProvider>
-          <Header />
-          <main>
-            {children}
-          </main>
-          <Footer />
+          <div className="layout-wrapper">
+            <Header />
+            <main className="layout-main">{children}</main>
+            <Footer />
+          </div>
         </AuthProvider>
         <Toaster position="top-right" />
       </body>

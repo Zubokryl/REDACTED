@@ -3,6 +3,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Model3D;
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -10,37 +12,37 @@ class ModelController extends Controller
 {
     // Get list of current user's models
     public function index(Request $request)
-    {
-        \Log::info('=== MODELS INDEX REQUEST ===');
-        \Log::info('Headers:', $request->headers->all());
-        \Log::info('Auth user:', ['user' => $request->user()]);
-        \Log::info('Request params:', $request->all());
+{
+    \Log::info('=== MODELS INDEX REQUEST ===');
+    \Log::info('Headers:', $request->headers->all());
+    \Log::info('Auth user:', ['user' => $request->user()]);
+    \Log::info('Request params:', $request->all());
 
         $query = Model3D::query();
 
         // If creator_id is passed in request parameters - filter by it
-        if ($request->has('creator_id')) {
-            $query->where('creator_id', $request->input('creator_id'));
+    if ($request->has('creator_id')) {
+        $query->where('creator_id', $request->input('creator_id'));
         } else {
             // Otherwise - if user is authenticated, return only their models
             $user = $request->user();
             if ($user) {
                 $query->where('creator_id', $user->id);
             }
-        }
+    }
 
         $models = $query->get();
         \Log::info('Returning models:', ['count' => $models->count()]);
 
-        return response()->json($models);
-    }
+    return response()->json($models);
+}
 
     // Get one model by id
     public function show($id)
     {
         $model = Model3D::findOrFail($id);
         
-        // Ensure the model file URL is absolute and not duplicated
+     
         // Ensure the model_file URL is absolute and not duplicated
         if ($model->model_file) {
             if (str_starts_with($model->model_file, 'http')) {
@@ -116,6 +118,7 @@ class ModelController extends Controller
                 'description' => 'required|string',
                 'category' => 'required|string',
                 'model_file' => 'required|file|mimes:fbx,obj,glb|max:5242880', // 5GB max (5120MB)
+                'preview_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048', // 2MB
                 'features' => 'required|array',
                 'features.*' => 'required|in:0,1',
                 'formats' => 'array',
@@ -189,13 +192,30 @@ class ModelController extends Controller
                 $features[$key] = $request->input("features.{$index}") === '1';
             }
 
-            // Create model
+               // Обработка preview_image
+$previewImageName = null;
+
+if ($request->hasFile('preview_image')) {
+    $image = $request->file('preview_image');
+    $previewImageName = uniqid() . '_' . time() . '.' . $image->getClientOriginalExtension();
+
+    // Создание директории если нужно
+    $previewPath = storage_path('app/public/previews');
+    if (!file_exists($previewPath)) {
+        mkdir($previewPath, 0755, true);
+    }
+
+    $image->storeAs('public/previews', $previewImageName);
+}
+
+           
             $model = Model3D::create([
                 'creator_id' => $request->user()->id,
                 'title' => $request->title,
                 'description' => $request->description,
                 'category' => $request->category,
                 'model_file' => $filename,
+                'preview_image' => $previewImageName, 
                 'features' => $features,
                 'formats' => $request->formats,
                 'tools' => $request->tools,
@@ -205,6 +225,7 @@ class ModelController extends Controller
                 'vertices' => $request->vertices,
                 'price' => $request->price,
                 'license' => $request->license
+
             ]);
 
             \Log::info('Model created successfully', [
@@ -255,7 +276,6 @@ class ModelController extends Controller
         }
     }
 
-    // Update model
     public function update(Request $request, $id)
     {
         $user = $request->user();
@@ -289,7 +309,6 @@ class ModelController extends Controller
         return response()->json($model);
     }
 
-    // Delete model
     public function destroy(Request $request, $id)
     {
         $user = $request->user();
@@ -343,24 +362,55 @@ class ModelController extends Controller
         }
     }
 
-    public function getPublishedModels()
-    {
-        $models = Model3D::with(['creator:id,name,profile_photo_url'])
-            ->whereHas('creator', function ($query) {
-                $query->where('role', 'creator');
-            })
-            ->select([
-                'id',
-                'title',
-                'description',
-                'price',
-                'images',
-                'creator_id',
-                'created_at'
-            ])
-            ->latest()
-            ->paginate(12);
+    public function getPublishedModels(Request $request)
+{
+    $query = Model3D::with(['creator:id,name,profile_photo_url'])
+        ->whereHas('creator', function ($query) {
+            $query->where('role', 'creator');
+        });
 
-        return response()->json($models);
+    // Фильтрация по категории
+    if ($request->filled('category')) {
+        $query->where('category', $request->category);
     }
+
+    // Фильтрация по минимальной цене
+    if ($request->filled('min_price')) {
+        $query->where('price', '>=', $request->min_price);
+    }
+
+   
+    if ($request->filled('max_price')) {
+        $query->where('price', '<=', $request->max_price);
+    }
+
+   
+    if ($request->filled('creator')) {
+        $creatorName = $request->creator;
+        $query->whereHas('creator', function ($q) use ($creatorName) {
+            $q->where('name', 'like', "%{$creatorName}%");
+        });
+    }
+
+    $models = $query
+        ->select([
+            'id',
+            'title',
+            'description',
+            'price',
+            'category',
+            'images',
+            'creator_id',
+            'created_at',
+            'preview_image'
+        ])
+        ->latest()
+        ->paginate(12);
+
+    $models->each(function ($model) {
+        $model->preview_image_url = $model->getPreviewImageUrlAttribute();
+    });
+
+    return response()->json($models);
+}
 }

@@ -1,7 +1,7 @@
 .container {
   padding: 8rem 1rem;
   background-color: #111111;
-  color: #b9b7b7;
+  color: #dfdede;
   font-family: 'Open Sans', sans-serif;
   min-height: 100vh;
   display: flex;
@@ -26,15 +26,12 @@
   width: 100%;
   aspect-ratio: 1 / 1;
   background-color: #1f1f1f;
-  border: 2px dashed #444;
+  border: px dashed #444;
   border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #777;
+  color: #dfd7d7;
   font-size: 1rem;
+  padding: 0;  
 }
-
 .row {
   display: flex;
   gap: 10px;
@@ -60,7 +57,7 @@
 .buttonEditModel {
   background-color: transparent;
   color: #c0c0c0;
-  border: 1px solid #A68A56;
+  border: 1px solid #fff6c1;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
   font-size: 1rem;
@@ -72,9 +69,9 @@
 
 .buttonBackToStore:hover,
 .buttonEditModel:hover {
-  background-color: #A68A56;
+  background-color: #fff6c1;
   color: #111111;
-  border-color: #A68A56;
+  border-color: #fff6c1;
 }
 
 .gridFields {

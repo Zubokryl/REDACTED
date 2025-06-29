@@ -45,9 +45,9 @@
   }
   
   .link {
-    color: #ff0000;
+    color: #73171F;
     text-decoration: none;
-    font-size: 2rem;
+    font-size: 2.5rem;
     position: relative;
     background: none;
     border: none;
@@ -65,7 +65,6 @@
     bottom: -0.5rem;
     width: 100%;
     height: 1.5rem;
-    background: url('/gothic-underline.svg') no-repeat center bottom;
     background-size: contain;
     opacity: 0;
     transition: opacity 0.3s ease;
@@ -78,7 +77,7 @@
   .burger {
     display: none;
     font-size: 2.5rem;
-    color: #ff0000;
+    color: #73171F;
     background: none;
     border: none;
     cursor: pointer;
@@ -104,7 +103,7 @@
       top: 1.5rem;
       right: 1.5rem;
       font-size: 2.5rem;
-      color: #ff0000;
+      color: #73171F;
       background: none;
       border: none;
       cursor: pointer;
@@ -114,32 +113,32 @@
     .nav {
       display: none;
       flex-direction: column;
-      justify-content: center; /* Vertical centering */
-      align-items: center; /* Horizontal centering */
+      justify-content: center; 
+      align-items: center; 
       position: fixed;
       top: 0;
       left: 0;
-      width: 100vw;  /* Takes full screen width */
-      height: 100vh; /* Takes full screen height */
-      background-color: #000000; /* Black opaque background */
+      width: 100vw;  
+      height: 100vh; 
+      background-color: #000000; 
       gap: 2.5rem;
       z-index: 100;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.3s ease, transform 0.3s ease;
-      transform: translateX(-100%); /* Initial menu state outside screen */
+      transform: translateX(-100%); 
     }
   
     .navOpen {
       display: flex;
       opacity: 1;
       pointer-events: auto;
-      transform: translateX(0); /* Menu opens */
+      transform: translateX(0); 
     }
   
     .link {
       font-size: 2rem;
-      color: #ff0000;
+      color: #73171F;
       text-decoration: none;
       background: none;
       border: none;
@@ -155,7 +154,6 @@
       bottom: -0.5rem;
       width: 100%;
       height: 1.5rem;
-      background: url('/gothic-underline.svg') no-repeat center bottom;
       background-size: contain;
       opacity: 0;
       transition: opacity 0.3s ease;

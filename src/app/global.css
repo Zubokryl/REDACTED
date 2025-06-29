@@ -1,27 +1,38 @@
 @font-face {
-    font-family: 'Drexia';
-    src: url('/fonts/Drexia.otf') format('opentype');
-    font-weight: normal;
-    font-style: normal;
-  }
-  
-  html, body {
-    font-family: 'Open Sans', sans-serif;
-    height: 100%;
-    width: 100vw;
-    overflow-x: hidden;
-    min-height: 100vh;
-  }
+  font-family: 'Drexia';
+  src: url('/fonts/Drexia.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
 
-  * {
-    margin: 0;
-    padding: 0;
-  }
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #111111;
+  color: #b9b7b7;
+  overflow-x: hidden;
+}
 
-  body {
-    font-family: 'Open Sans', sans-serif;
-    background-color: #111111;
-    color: #b9b7b7;
-    margin: 0;
-    padding: 0;
-  }
+body.layout-body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.layout-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 100vh;
+}
+
+.layout-main {
+  flex: 1;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}

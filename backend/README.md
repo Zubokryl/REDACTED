@@ -18,3 +18,7 @@ upload_max_filesize = 5G
 post_max_size = 5G
 max_execution_time = 7200
 max_input_time = 7200
+
+Blender (?) -  for rendering 3d preview as img
+
+

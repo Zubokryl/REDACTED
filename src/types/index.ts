@@ -5,7 +5,6 @@ export interface User {
   [key: string]: unknown; 
 }
 
-
 export interface SocialLinks {
   Artstation?: string;
   Facebook?: string;
@@ -29,10 +28,19 @@ export interface Profile {
   socialLinks: SocialLinks;
 }
 
+export interface UserProfile {
+  name: string;
+  about: string;
+  contact: string;
+  profile_photo_url: string;
+  socialLinks: SocialLinks;
+}
+
 
 export interface AuthData {
   user: User | null;
   profile: Profile | null;
+  userProfile: UserProfile | null; 
   models?: ModelForm[];
 }
 
@@ -77,6 +85,7 @@ export interface ModelForm {
   tags?: string[];
   materials?: string[];
   model_file: string | File;
+  preview_file?: File;
   images?: string[]; 
   preview_video?: string;          
 }
@@ -94,3 +103,27 @@ export const SOFTWARE_OPTIONS = [
 ] as const;
 
 export type SoftwareOption = typeof SOFTWARE_OPTIONS[number];
+
+// License type
+export type LicenseType = 'personal' | 'commercial' | 'enterprise';
+
+// Order status
+export type OrderStatus = 'pending' | 'completed' | 'failed';
+
+// Order type
+export interface DigitalOrder {
+  id: number;
+  user_id: number;
+  model_id: number;
+  price: number;
+  license_type: LicenseType;
+  status: OrderStatus;
+  download_count: number;
+  downloaded_at: string | null;
+  created_at: string;
+  updated_at: string;
+
+  // Optional — if the API returns expanded data
+  model?: ModelForm; // included if model details are returned
+  user?: User;       // included if buyer details are returned
+}

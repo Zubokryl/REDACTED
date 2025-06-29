@@ -18,6 +18,7 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('
 Route::get('/shop/models', [ModelController::class, 'getPublishedModels']);
 Route::get('models/file/{filename}', [ModelController::class, 'serveModelFile']);
 Route::get('/creator/{id}', [ProfileController::class, 'getCreatorProfile']);
+Route::get('/models/{id}', [ModelController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/resend-email-verify', [AuthController::class, 'resendEmailVerificationMail']);
@@ -30,7 +31,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/models', [ModelController::class, 'index']);
     Route::post('/models', [ModelController::class, 'store']);
-    Route::get('/models/{id}', [ModelController::class, 'show']);
     Route::put('/models/{id}', [ModelController::class, 'update']);
     Route::delete('/models/{id}', [ModelController::class, 'destroy']);
 
