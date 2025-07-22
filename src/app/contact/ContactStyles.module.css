@@ -173,6 +173,20 @@
   background-repeat: no-repeat;
   background-position: right 1rem center;
   background-size: 1rem;
+  cursor: pointer;
+  border: 1px solid rgba(166, 138, 86, 0.5);
+  background-color: #111111;
+}
+
+.formSelect option {
+  background-color: #111111;
+  color: #fff;
+  padding: 10px;
+  font-size: 1rem;
+}
+
+.formSelect:hover {
+  border-color: #A68A56;
 }
 
 .formTextarea {

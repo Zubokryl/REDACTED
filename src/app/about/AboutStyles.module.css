@@ -5,6 +5,75 @@
   color: #fff;
 }
 
+/* User Guide Styles */
+.guideContainer {
+  padding: 2rem 0;
+}
+
+.guideSection {
+  margin-bottom: 3rem;
+  background-color: rgba(26, 26, 26, 0.6);
+  padding: 2rem;
+  border-radius: 8px;
+  border: 1px solid #333;
+}
+
+.guideSubtitle {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: #A68A56;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.guideList {
+  list-style-type: disc;
+  padding-left: 2rem;
+  margin-top: 1rem;
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.guideList li {
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+
+.licenseItem, .creatorSection, .purchaseSection {
+  background-color: rgba(166, 138, 86, 0.1);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.licenseItem h4, .creatorSection h4, .purchaseSection h4 {
+  color: #A68A56;
+  margin-bottom: 0.75rem;
+  font-size: 1.3rem;
+}
+
+/* Tabs */
+.tabsContainer {
+  display: flex;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #333;
+}
+
+.tab {
+  padding: 1rem 2rem;
+  background: transparent;
+  border: none;
+  color: #ccc;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-bottom: 3px solid transparent;
+}
+
+.tabActive {
+  color: #A68A56;
+  border-bottom: 3px solid #A68A56;
+}
+
 .heroSection {
   text-align: center;
   margin-bottom: 4rem;

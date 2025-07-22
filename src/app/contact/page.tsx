@@ -184,8 +184,9 @@ export default function ContactPage() {
                     onChange={handleChange}
                     required
                     className={styles.formSelect}
+                    aria-label="Select a subject"
                   >
-                    <option value="">Select a subject</option>
+                    <option value="" disabled>Select a subject</option>
                     <option value="general">General Inquiry</option>
                     <option value="support">Technical Support</option>
                     <option value="billing">Billing Question</option>
