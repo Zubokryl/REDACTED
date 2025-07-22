@@ -13,7 +13,7 @@
   font-weight: bold;
   margin-bottom: 2rem;
   text-align: center;
-  color: #ff0000;
+  color: #73171F;
   padding-top: 1rem;
 }
 
@@ -100,7 +100,7 @@
 
 .modelTitle {
   text-decoration: none;
-  color: #ff0000;
+  color: #A68A56;
 }
 
 .modelTitle h2 {
@@ -110,7 +110,7 @@
 }
 
 .modelTitle:hover h2 {
-  color: #cc0000;
+  color: #73171F;
 }
 
 .modelDescription {
@@ -134,7 +134,7 @@
 }
 
 .creatorInfo:hover {
-  color: #ff0000;
+  color: #73171F;
 }
 
 .creatorAvatar {
@@ -153,7 +153,22 @@
   display: block;
   font-size: 1.25rem;
   font-weight: bold;
-  color: #ff0000;
+  color: #970915;
+}
+
+.addToCartButton {
+  margin-top: 0.5rem;
+  background-color: #A68A56;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.addToCartButton:hover {
+  background-color: #A68A56;
 }
 
 .modelCategory {
@@ -172,7 +187,7 @@
 
 .paginationButton {
   padding: 0.5rem 1rem;
-  background-color: #ff0000;
+  background-color: #73171F;
   color: #fff;
   border: none;
   border-radius: 0.25rem;
@@ -181,7 +196,7 @@
 }
 
 .paginationButton:hover:not(:disabled) {
-  background-color: #cc0000;
+  background-color: #73171F;
 }
 
 .paginationButton:disabled {
@@ -212,7 +227,7 @@
 
 .purchaseButton {
   padding: 0.75rem 1.5rem;
-  background-color: #ff0000;
+  background-color: #73171F;
   color: #fff;
   border: none;
   border-radius: 0.25rem;
@@ -221,7 +236,7 @@
 }
 
 .purchaseButton:hover {
-  background-color: #cc0000;
+  background-color: #73171F;
 }
 
 .loading {
@@ -230,7 +245,7 @@
   align-items: center;
   min-height: 100vh;
   font-size: 1.25rem;
-  color: #ff0000;
+  color: #73171F;
 }
 
 .error {
@@ -239,7 +254,7 @@
   align-items: center;
   min-height: 100vh;
   font-size: 1.25rem;
-  color: #ff0000;
+  color: #73171F;
 } 
 
 .filters {
@@ -258,7 +273,7 @@
 
 .filterButton {
   padding: 8px 16px;
-  background-color: #ff0000;
+  background-color: #73171F;
   color: white;
   border: none;
   border-radius: 8px;
@@ -268,4 +283,76 @@
 .licenseSelect {
   margin-right: 1rem;
   bottom: 5rem;
+}
+
+.licenseSelectPerModel {
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* расстояние между селектом и кнопкой */
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  max-width: none; /* убрать ограничение ширины */
+  width: auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 0.95rem;
+  color: #A68A56;
+  background-color: #1a1a1a;
+  border: 1.5px solid #73171F;
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.licenseSelectPerModel select {
+  width: 180px; /* или другая удобная ширина */
+  background: transparent;
+  border: none;
+  color: #A68A56;
+  font-size: 0.95rem;
+  padding: 0.4rem 0.3rem;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+}
+.licenseSelectPerModel select:focus {
+  border-color: #970915;
+  box-shadow: 0 0 8px #970915;
+  outline: none;
+}
+
+/* Стиль для placeholder option (Select license) */
+.licenseSelectPerModel select option[value=""] {
+  color: #666;
+}
+
+/* При наведении на select */
+.licenseSelectPerModel select:hover {
+  border-color: #A68A56;
+}
+
+.modelTitleButton {
+  background-color: #A68A56;
+  color: #111;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom: 0.75rem;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.modelTitleButton:hover {
+  background-color: #8e7144;
+  transform: translateY(-2px);
+}
+
+.modelTitleButtonLink {
+  text-decoration: none;
+  display: block;
 }

@@ -11,28 +11,28 @@ use Illuminate\Support\Facades\Validator;
 class ModelController extends Controller
 {
     // Get list of current user's models
-    public function index(Request $request)
+public function index(Request $request)
 {
     \Log::info('=== MODELS INDEX REQUEST ===');
     \Log::info('Headers:', $request->headers->all());
     \Log::info('Auth user:', ['user' => $request->user()]);
     \Log::info('Request params:', $request->all());
 
-        $query = Model3D::query();
+    $query = Model3D::query();
 
-        // If creator_id is passed in request parameters - filter by it
+    // If creator_id is passed in request parameters - filter by it
     if ($request->has('creator_id')) {
         $query->where('creator_id', $request->input('creator_id'));
-        } else {
-            // Otherwise - if user is authenticated, return only their models
-            $user = $request->user();
-            if ($user) {
-                $query->where('creator_id', $user->id);
-            }
+    } else {
+        // Otherwise - if user is authenticated, return only their models
+        $user = $request->user();
+        if ($user) {
+            $query->where('creator_id', $user->id);
+        }
     }
 
-        $models = $query->get();
-        \Log::info('Returning models:', ['count' => $models->count()]);
+    $models = $query->get();
+    \Log::info('Returning models:', ['count' => $models->count()]);
 
     return response()->json($models);
 }
@@ -117,8 +117,11 @@ class ModelController extends Controller
                 'title' => 'required|string|max:255',
                 'description' => 'required|string',
                 'category' => 'required|string',
-                'model_file' => 'required|file|mimes:fbx,obj,glb|max:5242880', // 5GB max (5120MB)
-                'preview_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048', // 2MB
+                'model_file' => 'required|file|max:5242880', // 5GB max (5120MB)
+                'tbscene_file' => 'nullable|file|max:5242880', // Marmoset Toolbag scene file
+                'texture_files' => 'nullable|array',
+                'texture_files.*' => 'nullable|file|max:51200', // 50MB per texture
+                'preview_image' => 'nullable|file|max:20480', // 20MB
                 'features' => 'required|array',
                 'features.*' => 'required|in:0,1',
                 'formats' => 'array',
@@ -130,7 +133,8 @@ class ModelController extends Controller
                 'release_date' => 'required|date',
                 'vertices' => 'required|integer|min:0',
                 'price' => 'required|numeric|min:0',
-                'license' => 'required|string'
+                'available_licenses' => 'required|array|min:1',
+                'available_licenses.*' => 'string|in:personal,commercial,enterprise',
             ]);
 
             if ($validator->fails()) {
@@ -192,22 +196,53 @@ class ModelController extends Controller
                 $features[$key] = $request->input("features.{$index}") === '1';
             }
 
-               // Обработка preview_image
-$previewImageName = null;
+            // Обработка preview_image
+            $previewImageName = null;
+            if ($request->hasFile('preview_image')) {
+                $image = $request->file('preview_image');
+                $previewImageName = uniqid() . '_' . time() . '.' . $image->getClientOriginalExtension();
 
-if ($request->hasFile('preview_image')) {
-    $image = $request->file('preview_image');
-    $previewImageName = uniqid() . '_' . time() . '.' . $image->getClientOriginalExtension();
+                // Создание директории если нужно
+                $previewPath = storage_path('app/public/previews');
+                if (!file_exists($previewPath)) {
+                    mkdir($previewPath, 0755, true);
+                }
 
-    // Создание директории если нужно
-    $previewPath = storage_path('app/public/previews');
-    if (!file_exists($previewPath)) {
-        mkdir($previewPath, 0755, true);
-    }
+                $image->storeAs('public/previews', $previewImageName);
+            }
 
-    $image->storeAs('public/previews', $previewImageName);
-}
-
+            // Обработка tbscene_file
+            $tbsceneFileName = null;
+            if ($request->hasFile('tbscene_file')) {
+                $tbsceneFile = $request->file('tbscene_file');
+                $tbsceneFileName = uniqid() . '_' . time() . '.tbscene';
+                
+                // Создание директории если нужно
+                $tbscenePath = storage_path('app/public/tbscenes');
+                if (!file_exists($tbscenePath)) {
+                    mkdir($tbscenePath, 0755, true);
+                }
+                
+                $tbsceneFile->storeAs('public/tbscenes', $tbsceneFileName);
+            }
+            
+            // Обработка texture_files
+            $textureFileNames = [];
+            if ($request->hasFile('texture_files')) {
+                $textureFiles = $request->file('texture_files');
+                
+                // Создание директории если нужно
+                $texturesPath = storage_path('app/public/textures');
+                if (!file_exists($texturesPath)) {
+                    mkdir($texturesPath, 0755, true);
+                }
+                
+                foreach ($textureFiles as $index => $textureFile) {
+                    $textureFileName = uniqid() . '_' . time() . '_' . $index . '.' . $textureFile->getClientOriginalExtension();
+                    $textureFile->storeAs('public/textures', $textureFileName);
+                    $textureFileNames[] = $textureFileName;
+                }
+            }
            
             $model = Model3D::create([
                 'creator_id' => $request->user()->id,
@@ -224,8 +259,9 @@ if ($request->hasFile('preview_image')) {
                 'release_date' => $request->release_date,
                 'vertices' => $request->vertices,
                 'price' => $request->price,
-                'license' => $request->license
-
+                'available_licenses' => $request->available_licenses ?? [],
+                'tbscene_file' => $tbsceneFileName,
+                'texture_files' => $textureFileNames,
             ]);
 
             \Log::info('Model created successfully', [
@@ -300,7 +336,8 @@ if ($request->hasFile('preview_image')) {
             'tools.*' => 'string',
             'printable' => 'boolean',
             'price' => 'nullable|numeric|min:0',
-            'license' => 'nullable|string|max:255',
+            'available_licenses' => 'required|array|min:1',
+            'available_licenses.*' => 'string|in:personal,commercial,enterprise',
          
         ]);
 
@@ -364,6 +401,16 @@ if ($request->hasFile('preview_image')) {
 
     public function getPublishedModels(Request $request)
 {
+    // Валидация запроса, включая licenses
+    $validated = $request->validate([
+        'category' => 'sometimes|string',
+        'min_price' => 'sometimes|numeric|min:0',
+        'max_price' => 'sometimes|numeric|min:0',
+        'creator' => 'sometimes|string',
+        'available_licenses' => 'sometimes|array|min:1',
+        'available_licenses.*' => 'string|in:personal,commercial,enterprise',
+    ]);
+
     $query = Model3D::with(['creator:id,name,profile_photo_url'])
         ->whereHas('creator', function ($query) {
             $query->where('role', 'creator');
@@ -379,16 +426,28 @@ if ($request->hasFile('preview_image')) {
         $query->where('price', '>=', $request->min_price);
     }
 
-   
+    // Фильтрация по максимальной цене
     if ($request->filled('max_price')) {
         $query->where('price', '<=', $request->max_price);
     }
 
-   
+    // Фильтрация по имени создателя
     if ($request->filled('creator')) {
         $creatorName = $request->creator;
         $query->whereHas('creator', function ($q) use ($creatorName) {
             $q->where('name', 'like', "%{$creatorName}%");
+        });
+    }
+
+    // Фильтрация по лицензиям (если переданы)
+    if ($request->filled('available_licenses')) {
+        $licenses = $request->available_licenses;
+        // Предполагаю, что в таблице есть поле available_licenses — JSON или сериализованный массив
+        // Пример для JSON поля в MySQL:
+        $query->where(function ($q) use ($licenses) {
+            foreach ($licenses as $license) {
+                $q->orWhereJsonContains('available_licenses', $license);
+            }
         });
     }
 
@@ -402,8 +461,8 @@ if ($request->hasFile('preview_image')) {
             'images',
             'creator_id',
             'created_at',
-            'preview_image'
-        ])
+            'preview_image',
+                   ])
         ->latest()
         ->paginate(12);
 
@@ -412,5 +471,5 @@ if ($request->hasFile('preview_image')) {
     });
 
     return response()->json($models);
-}
+   }
 }

@@ -1,0 +1,243 @@
+.checkoutContainer {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.itemsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.item {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 1rem;
+}
+
+.info {
+  flex: 1;
+}
+
+.checkoutButton {
+  margin-top: 2rem;
+  padding: 1rem 2rem;
+  background-color: #A68A56;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.checkoutButton:disabled {
+  background-color: #aaa;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.item input[type="checkbox"] {
+  margin-right: 12px;
+}
+
+.summary {
+  margin-top: 24px;
+  font-size: 1.1rem;
+}
+.stripeInput {
+  background: #111;
+  border: 2px solid #A68A56;
+  border-radius: 10px;
+  padding: 18px 14px;
+  font-size: 18px;
+  margin-bottom: 18px;
+  color: #fff;
+  transition: border-color 0.2s;
+}
+
+.payment-button {
+  margin-top: 1.5rem;
+  width: 100%;
+  background: linear-gradient(90deg, #A68A56 0%, #8c6f3c 100%);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 1rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(166, 138, 86, 0.07);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.payment-button:hover:not(:disabled) {
+  background: linear-gradient(90deg, #8c6f3c 0%, #A68A56 100%);
+  box-shadow: 0 4px 16px rgba(166, 138, 86, 0.13);
+}
+
+.payment-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  color: #eee;
+}
+
+.stripe-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #A68A56;
+  font-size: 1rem;
+  letter-spacing: 0.03em;
+}
+
+.stripe-error {
+  color: #e53e3e;
+  margin-top: 8px;
+  font-size: 0.95rem;
+  min-height: 22px;
+}
+
+.containerCentered {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #111;
+}
+
+.paymentBox {
+  background: #1a1a1a;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(166, 138, 86, 0.08);
+  padding: 2.5rem 2rem 2rem 2rem;
+  max-width: 420px;
+  width: 100%;
+  color: #fff;
+  border: 2px solid #A68A56;
+}
+
+.title {
+  color: #A68A56;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.orderTitle {
+  color: #A68A56;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.orderList {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 1rem;
+}
+
+.orderItem {
+  color: #fff;
+  background: #222;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-left: 4px solid #A68A56;
+}
+
+.total {
+  color: #A68A56;
+  font-size: 1.15rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  text-align: right;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  justify-content: flex-end;
+}
+
+.button {
+  padding: 0.7rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(166, 138, 86, 0.07);
+}
+
+.buttonGreen {
+  background: linear-gradient(90deg, #A68A56 0%, #8c6f3c 100%);
+  color: #fff;
+}
+.buttonGreen:hover:not(:disabled) {
+  background: linear-gradient(90deg, #8c6f3c 0%, #A68A56 100%);
+  color: #fff;
+}
+
+.buttonRed {
+  background: #73171F;
+  color: #fff;
+}
+.buttonRed:hover:not(:disabled) {
+  background: #970915;
+  color: #fff;
+}
+
+.buttonGray {
+  background: #222;
+  color: #A68A56;
+  border: 1.5px solid #A68A56;
+}
+.buttonGray:hover:not(:disabled) {
+  background: #A68A56;
+  color: #111;
+}
+
+.successMessage {
+  background: #222;
+  border-left: 4px solid #A68A56;
+  border-radius: 8px;
+  padding: 1.5rem 1rem;
+  color: #A68A56;
+  text-align: center;
+  font-size: 1.15rem;
+  margin-top: 1.5rem;
+}
+
+.input {
+  background: #111;
+  border: 2px solid #A68A56;
+  border-radius: 10px;
+  padding: 14px 12px;
+  font-size: 18px;
+  margin-bottom: 18px;
+  color: #fff;
+  width: 100%;
+  transition: border-color 0.2s;
+}
+
+.input:focus {
+  border-color: #A68A56;
+  outline: none;
+}
+
+@media (max-width: 600px) {
+  .paymentBox {
+    padding: 1rem 0.5rem;
+    max-width: 98vw;
+  }
+}

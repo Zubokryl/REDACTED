@@ -5,8 +5,8 @@
     justify-content: center;
     background-color: #111;
     padding: 1rem;
-    font-family: 'Drexia', sans-serif;
-    color: #ff0000;
+    font-family: 'Golos Text', sans-serif;
+    color: #73171F;
   }
   
   .form {
@@ -23,7 +23,7 @@
     font-weight: bold;
     text-align: center;
     margin-bottom: 1.5rem;
-    color: #ff0000;
+    color: #73171F;
   }
   
   .input,
@@ -31,16 +31,16 @@
     width: 100%;
     padding: 0.75rem;
     margin-bottom: 1rem;
-    border: 1px solid #ff0000;
+    border: 1px solid #73171F;
     background-color: #222;
-    color: #ff0000;
+    color: #73171F;
     border-radius: 0.25rem;
   }
   
   .button {
     width: 100%;
     padding: 0.75rem;
-    background-color: #ff0000;
+    background-color: #73171F;
     color: #111;
     font-weight: bold;
     border: none;
@@ -50,11 +50,11 @@
   }
   
   .button:hover {
-    background-color: #cc0000;
+    background-color: #73171F;
   }
   
   .link {
-    color: #ff0000;
+    color: #73171F;
     text-decoration: underline;
     text-align: center;
     display: block;

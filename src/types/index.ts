@@ -71,7 +71,7 @@ export interface ModelForm {
   description?: string;
   category?: string;
   price?: number | string;
-  license?: string;
+  available_licenses?: LicenseType[];
   formats?: string[];     
   features?: ModelFeatures;
   vertices: number;
@@ -86,6 +86,7 @@ export interface ModelForm {
   materials?: string[];
   model_file: string | File;
   preview_file?: File;
+  preview_image_url: string;
   images?: string[]; 
   preview_video?: string;          
 }
@@ -104,8 +105,6 @@ export const SOFTWARE_OPTIONS = [
 
 export type SoftwareOption = typeof SOFTWARE_OPTIONS[number];
 
-// License type
-export type LicenseType = 'personal' | 'commercial' | 'enterprise';
 
 // Order status
 export type OrderStatus = 'pending' | 'completed' | 'failed';
@@ -123,7 +122,38 @@ export interface DigitalOrder {
   created_at: string;
   updated_at: string;
 
-  // Optional — if the API returns expanded data
+  // Optional — if the API returns expanded data - ???
   model?: ModelForm; // included if model details are returned
   user?: User;       // included if buyer details are returned
+}
+
+export interface OrderItem {
+  id: number;
+  license_type: LicenseType;
+  price: number;
+  model: {
+    id: number;
+    title: string;
+  };
+}
+
+export interface BulkOrder {
+  id: number;
+  items: OrderItem[];
+  price: number;
+}
+
+export type LicenseType = 'personal' | 'commercial' | 'enterprise';
+
+export interface CartItemApi {
+  id: number;
+  model_id: number;
+  license_type: LicenseType;
+  preview_image_url: File;
+  model: {
+    id: number;
+    title: string;
+    price: number;
+    preview_image_url: File;
+  };
 }

@@ -1,5 +1,5 @@
 import { axiosClient } from "./axios";
-import type { User, ModelForm, Profile, DigitalOrder } from "@/types";
+import type { User, ModelForm, Profile, DigitalOrder, CartItemApi, BulkOrder } from "@/types";
 import { AxiosError, isAxiosError } from "axios";
 import { toast } from "react-hot-toast";
 
@@ -116,6 +116,8 @@ export const getCurrentUser = async (): Promise<User | null> => {
   }
 };
 
+//----------------------------------PROFILE API-------------------------------------
+
 export const getProfile = async (): Promise<Profile | null> => {
   try {
     return await makeRequest<Profile>('get', '/profile');
@@ -156,6 +158,9 @@ export const updateProfile = async (
     });
   }
 };
+
+
+//------------------------------MODEL API-----------------------------------------
 
 export const getModelById = async (id: number): Promise<ModelForm> => {
   return makeRequest<ModelForm>("get", `/models/${id}`);
@@ -256,17 +261,27 @@ export const getModels = async (params?: { creator_id?: number }): Promise<Model
 };
 
 
-// Получить список заказов текущего пользователя
-export const getUserOrders = async (): Promise<DigitalOrder[]> => {
-  return makeRequest<DigitalOrder[]>("get", "/orders");
+//---------------------------------------ORDER API---------------------------------------
+
+// get the list of all orders for the current user.
+export const getUserOrders = async () => {
+  try {
+    const response = await makeRequest("get", "/orders");
+    console.log('getUserOrders raw response:', response);
+    // Return the response as-is to handle both paginated and non-paginated responses
+    return response;
+  } catch (error) {
+    console.error('Error fetching user orders:', error);
+    return [];
+  }
 };
 
-// Получить один заказ по ID
-export const getOrderById = async (orderId: number): Promise<DigitalOrder> => {
-  return makeRequest<DigitalOrder>("get", `/orders/${orderId}`);
+// get one order according id
+export const getOrderById = async (orderId: number): Promise<BulkOrder> => {
+  return makeRequest<BulkOrder>("get", `/orders/${orderId}`);
 };
 
-// Оформить заказ (покупка модели)
+// buy one model
 export const createOrder = async (data: {
   model_id: number;
   license_type: "personal" | "commercial" | "enterprise";
@@ -277,20 +292,68 @@ export const createOrder = async (data: {
   return makeRequest("post", "/orders", data);
 };
 
-// Скачать файл модели по заказу
-export const downloadOrder = async (orderId: number): Promise<Blob> => {
+// Создать заказ на несколько моделей (bulk)
+export const createBulkOrder = async (data: {
+  items: { model_id: number; license_type: "personal" | "commercial" | "enterprise" }[];
+}): Promise<{
+  message: string;
+  order: BulkOrder;
+}> => {
+  return makeRequest("post", "/orders/bulk", data);
+};
+// Создать заказ на все модели
+export const createOrderAllModels = async () => {
+  return makeRequest("post", "/orders/all");
+};
+
+// Download model according to order 
+// Скачать модель из заказа, можно указать конкретный model_id через query
+export const downloadOrder = async (orderId: number, modelId?: number): Promise<Blob> => {
+  const params = modelId ? { model_id: modelId } : {};
+
   const response = await axiosClient.get(`/orders/${orderId}/download`, {
     responseType: "blob",
     headers: {
       Accept: "application/json",
       "X-Requested-With": "XMLHttpRequest",
     },
+    params,
   });
 
   return response.data;
 };
 
+//----------------------------------CART API---------------------------------------------
 
+// Получить все товары в корзине (у текущего пользователя)
+export const fetchCartItems = async (): Promise<CartItemApi[]> => {
+  return makeRequest<CartItemApi[]>('get', '/cart');
+};
+
+// Добавить модель в корзину
+export const addToCart = async (model_id: number, license_type: string): Promise<CartItemApi> => {
+  return makeRequest<CartItemApi>('post', '/cart', { model_id, license_type });
+};
+
+// Удалить из корзины по id CartItem
+export const removeFromCart = async (cartItemId: number): Promise<void> => {
+  return makeRequest<void>('delete', `/cart/${cartItemId}`);
+};
+
+// Очистить корзину
+export const clearCartApi = async (): Promise<void> => {
+  return makeRequest<void>('delete', '/cart/clear');
+};
+
+// Обновить лицензию у товара в корзине
+export const updateCartItemLicense = async (cartItemId: number, license_type: string): Promise<CartItemApi> => {
+  return makeRequest<CartItemApi>('put', `/cart/${cartItemId}`, { license_type });
+};
+
+// Оформить заказ (checkout)
+export const checkoutCart = async (): Promise<{ message: string; orders: DigitalOrder[] }> => {
+  return makeRequest<{ message: string; orders: DigitalOrder[] }>('post', '/cart/checkout');
+};
 
 
 export const forgotPassword = async (data: { email: string }): Promise<{ status: string }> => {
@@ -328,7 +391,15 @@ export const api = {
   getUserOrders,
   getOrderById,
   createOrder,
-  downloadOrder
+  createBulkOrder, 
+  downloadOrder,
+  createOrderAllModels,
+  checkoutCart,
+  updateCartItemLicense,
+  clearCartApi,
+  removeFromCart,
+  addToCart,
+  fetchCartItems
 };
 
 export { makeRequest };

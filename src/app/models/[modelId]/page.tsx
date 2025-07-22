@@ -5,27 +5,60 @@ import { useParams, useRouter } from 'next/navigation';
 import styles from './ModelStyles.module.css';
 import dynamic from 'next/dynamic';
 import { useAuth } from '@/context/AuthContext';
+import { useCart } from '@/context/CartContext';
 import { getModelById } from '@/lib/api';
 import type { ModelForm } from '@/types';
+import type { LicenseType } from '@/types';
+import { licenseCoefficient } from '@/utils/licenseCoefficient';
 
-const ModelPreview = dynamic(() => import('@/components/ModelPreview'), { ssr: false });
+const ModelPreview = dynamic(() => import('@/components/ModelDetailPreview'), { ssr: false });
 
 export default function ModelDetailsPage() {
   const router = useRouter();
   const params = useParams();
   const modelId = Number(params?.modelId);
   const { user } = useAuth();
-  const [purchaseStatus, setPurchaseStatus] = useState<string | null>(null);
+  const [selectedLicense, setSelectedLicense] = useState<LicenseType>('personal');
+
 
   const [model, setModel] = useState<ModelForm | null>(null);
+  const { addToCart } = useCart();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const handleBuyModel = () => {
-  setPurchaseStatus('Processing your order...')
-  // Simulating API call
-  setTimeout(() => {
-    setPurchaseStatus('Order successfully placed! (Mock)')
-  }, 1000);
+
+const handleBuyModel = () => {
+  if (!model?.id) {
+    console.error('Model ID is missing');
+    return;
+  }
+
+
+  const price = typeof model.price === 'number'
+    ? model.price
+    : model.price
+      ? parseFloat(model.price)
+      : 0;
+
+  let previewUrl: string | undefined = undefined;
+
+  if (typeof model.preview_file === 'string' && model.preview_file) {
+    previewUrl = (model.preview_file as string).startsWith('http')
+      ? model.preview_file
+      : `http://localhost:8000/storage/previews/${model.preview_file}`;
+  } else if (model.preview_file instanceof File) {
+    previewUrl = URL.createObjectURL(model.preview_file);
+  }
+
+addToCart({
+  model_id: model.id,
+  title: model.title,
+  license_type: selectedLicense,
+  base_price: price,
+  price: price * licenseCoefficient(selectedLicense),
+  preview_image_url: previewUrl ?? '', 
+});
+
+  router.push('/cart');
 };
 
   useEffect(() => {
@@ -127,10 +160,10 @@ export default function ModelDetailsPage() {
               </div>
             </div>
 
-            <div className={styles.field}>
-              <span className={styles.label}>License</span>
-              <div>{model.license ?? '-'}</div>
-            </div>
+           <div className={styles.field}>
+  <span className={styles.label}>License</span>
+  <div>{model.available_licenses?.[0] ?? '-'}</div>
+</div>
 
             <div className={styles.field}>
               <span className={styles.label}>Release Date</span>
@@ -154,6 +187,26 @@ export default function ModelDetailsPage() {
     <p>{model.description ?? '-'}</p>
   </div>
 
+  {model.available_licenses && (
+  <div className={styles.field}>
+    <span className={styles.label}>Choose License</span>
+    <select
+      value={selectedLicense}
+      onChange={(e) => setSelectedLicense(e.target.value as LicenseType)}
+      className={styles.select}
+    >
+      {model.available_licenses.map((license) => (
+        <option key={license} value={license}>
+          {license === 'personal' ? 'Standard License' :
+           license === 'commercial' ? 'Editorial Use' :
+           license === 'enterprise' ? 'Commercial Use' :
+           license}
+        </option>
+      ))}
+    </select>
+  </div>
+)}
+
   {/* Mock "Buy Model" button */}
   <div className={styles.field}>
       <button
@@ -161,7 +214,6 @@ export default function ModelDetailsPage() {
         className={styles.buyBtn}>
         Buy Model
       </button>
-      {purchaseStatus && <div>{purchaseStatus}</div>}
          </div>
       </div>
     </div>

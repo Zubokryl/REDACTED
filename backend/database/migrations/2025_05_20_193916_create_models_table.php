@@ -16,15 +16,12 @@ class CreateModelsTable extends Migration
             $table->string('title');
             $table->text('description')->nullable();
             $table->string('category')->nullable();
-
             $table->decimal('price', 8, 2)->default(0);
             $table->string('license')->default('Standard License');
-
             $table->json('formats')->nullable();
             $table->json('features')->nullable();
             $table->integer('vertices')->default(0);
             $table->boolean('printable')->default(false);
-
             $table->json('tools')->nullable();
             $table->json('tags')->nullable();
             $table->json('materials')->nullable();

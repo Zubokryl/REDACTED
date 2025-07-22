@@ -3,6 +3,11 @@
   height: 400px;
   background-color: #1a1a1a;
   position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #444;
+  margin-top: 1rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .errorContainer {
@@ -35,4 +40,22 @@
   color: #ffffff;
   text-align: center;
   font-size: 16px;
-} 
+}
+
+.loadingText {
+  color: #A68A56;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.errorText {
+  color: #ff4444;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: bold;
+}

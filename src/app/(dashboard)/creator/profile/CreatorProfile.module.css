@@ -228,22 +228,40 @@
 
 .input {
     width: 100%;
-    padding: 0.5rem;
+    padding: 0.75rem 1rem;
     font-size: 1rem;
     margin-top: 0.5rem;
-    border: 1px solid #a99d9d;
-    border-radius: 4px;
+    border: 1px solid rgba(166, 138, 86, 0.4);
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.2);
+    color: #fff;
+    transition: all 0.3s ease;
+}
+
+.input:focus {
+    outline: none;
+    border-color: #A68A56;
+    box-shadow: 0 0 0 2px rgba(166, 138, 86, 0.2);
 }
 
 .textarea {
     width: 100%;
-    height: 100px;
-    padding: 0.5rem;
+    min-height: 120px;
+    padding: 0.75rem 1rem;
     font-size: 1rem;
     margin-top: 0.5rem;
-    border: 1px solid #878787;
-    border-radius: 4px;
+    border: 1px solid rgba(166, 138, 86, 0.4);
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.2);
+    color: #fff;
     resize: vertical;
+    transition: all 0.3s ease;
+}
+
+.textarea:focus {
+    outline: none;
+    border-color: #A68A56;
+    box-shadow: 0 0 0 2px rgba(166, 138, 86, 0.2);
 }
 .deleteButton {
     background-color: #111111;
@@ -319,6 +337,48 @@
     display: inline-block;
 }
 
+.photoUpload {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  border: 1px dashed rgba(166, 138, 86, 0.4);
+  text-align: center;
+}
+
+.fileInput {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  background-color: rgba(166, 138, 86, 0.1);
+  border-radius: 4px;
+  color: #A68A56;
+  cursor: pointer;
+  border: 1px solid rgba(166, 138, 86, 0.3);
+  text-align: center;
+}
+
+.fileHint {
+  font-size: 0.8rem;
+  color: #999;
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 992px) {
+    .profileRow {
+        gap: 1.5rem;
+    }
+    
+    .profileDetails {
+        gap: 1rem;
+    }
+    
+    .editSocialsGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
 @media (max-width: 768px) {
     .content {
         padding: 0 1rem;
@@ -345,14 +405,14 @@
 
     .profileAboutContainer {
         width: 100%;
-        height: 100px;
-        padding: 0.5rem;
+        height: auto;
+        padding: 0;
         font-size: 1rem;
         margin-top: 0.5rem;
-        border: 1px solid #878787;
-        border-radius: 4px;
-        resize: vertical;
-        float:inherit;
+        border: none;
+        border-radius: 0;
+        resize: none;
+        float: none;
     }
 
     .profileDetails {
@@ -449,7 +509,7 @@
 
     .editSocialsGrid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
         gap: 1rem;
     }
 
@@ -461,13 +521,15 @@
 
     .profileButtons {
         display: flex;
-        gap: 1rem;
+        flex-direction: column;
+        gap: 0.75rem;
         justify-content: center;
         margin-top: 1rem;
         background-color: #000; 
         font-weight: normal;
         padding: 1rem;
         border-radius: 10px;
+        width: 100%;
     }
 
     .profileButton {
@@ -481,6 +543,8 @@
         cursor: pointer;
         transition: all 0.3s ease;
         font-family: 'Open Sans', sans-serif;
+        width: 100%;
+        text-align: center;
     }
 
     .profileButton:hover {
@@ -492,7 +556,7 @@
         background-color: #111111;
         color: #73171F;
         padding: 10px 16px;
-        border: 1px solid #8B0000;
+        border: 1px solid #73171F;
         border-radius: 8px;
         cursor: pointer;
         font-weight: normal;
@@ -514,5 +578,40 @@
         font-size: 0.9rem;
         font-weight: 500;
         border: 1px solid #555;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 8rem 0.75rem 4rem;
+    }
+    
+    .heading {
+        font-size: 1.75rem;
+    }
+    
+    .sectionTitle {
+        font-size: 1.25rem;
+    }
+    
+    .section {
+        padding: 0.75rem;
+    }
+    
+    .profileButton {
+        font-size: 0.9rem;
+        padding: 0.6rem 1rem;
+    }
+    
+    .softwareCheckboxes {
+        padding-left: 0;
+    }
+    
+    .checkboxLabel {
+        font-size: 0.9rem;
+    }
+    
+    .editSocialsGrid {
+        grid-template-columns: 1fr;
     }
 }

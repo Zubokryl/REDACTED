@@ -4,15 +4,18 @@ import Link from "next/link";
 import Image from "next/image";
 import styles from "./Header.module.css";
 import { useAuth } from "@/context/AuthContext";
+import { useCart } from "@/context/CartContext";
 import { useRouter, usePathname } from "next/navigation";
 import { useState } from "react";
 
 export default function Header() {
   const { user, logout } = useAuth();
+  const { cartItems } = useCart();
   const router = useRouter();
   const pathname = usePathname();
   const isHomePage = pathname === "/";
   const [menuOpen, setMenuOpen] = useState(false);
+  const cartItemCount = cartItems.length;
 
   const profileLink =
     user?.role === "admin"
@@ -42,6 +45,7 @@ export default function Header() {
         />
       </Link>
     </div>
+    
   
     <button
   className={styles.burger}
@@ -53,7 +57,8 @@ export default function Header() {
 
       <nav className={`${styles.nav} ${menuOpen ? styles.navOpen : ""}`}>
         <Link href="/shop" className={styles.link} onClick={() => setMenuOpen(false)}>Shop</Link>
-        <Link href="/cart" className={styles.link} onClick={() => setMenuOpen(false)}>Cart</Link>
+        <Link href="/about" className={styles.link} onClick={() => setMenuOpen(false)}>About</Link>
+        <Link href="/contact" className={styles.link} onClick={() => setMenuOpen(false)}>Contact</Link>
         {user ? (
           <>
             <Link href={profileLink} className={styles.link} onClick={() => setMenuOpen(false)}>
@@ -67,6 +72,21 @@ export default function Header() {
           <Link href="/login" className={styles.link} onClick={() => setMenuOpen(false)}>Login</Link>
         )}
       </nav>
+      
+      <div className={styles.cartContainer}>
+        <Link href="/cart" className={styles.link} onClick={() => setMenuOpen(false)}>
+          <div className={styles.cartWrapper}>
+            <Image 
+              src="/icons/cart-gold.svg" 
+              alt="Cart" 
+              width={32} 
+              height={32} 
+              className={styles.cartIcon} 
+            />
+          </div>
+        </Link>
+        {cartItemCount > 0 && <span className={styles.cartText}>{cartItemCount} {cartItemCount === 1 ? 'model' : 'models'}</span>}
+      </div>
     </header>
   );
 }

@@ -1,0 +1,348 @@
+.container {
+  padding: 8rem 2rem 4rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  color: #fff;
+}
+
+.heroSection {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.title {
+  font-size: 4rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #73171F;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  color: #ccc;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.contentSection {
+  display: flex;
+  gap: 4rem;
+  margin-bottom: 6rem;
+  align-items: center;
+}
+
+.reversed {
+  flex-direction: row-reverse;
+}
+
+.textBlock {
+  flex: 1;
+}
+
+.imageBlock {
+  flex: 1;
+  position: relative;
+}
+
+.featureImage {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  transition: transform 0.3s ease;
+}
+
+.featureImage:hover {
+  transform: scale(1.02);
+}
+
+.sectionTitle {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  color: #A68A56;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.textBlock p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.statsSection {
+  display: flex;
+  justify-content: space-around;
+  margin: 6rem 0;
+  padding: 3rem 0;
+  border-top: 1px solid #333;
+  border-bottom: 1px solid #333;
+}
+
+.statItem {
+  text-align: center;
+}
+
+.statNumber {
+  font-size: 3.5rem;
+  font-weight: bold;
+  color: #A68A56;
+  margin-bottom: 0.5rem;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.statLabel {
+  font-size: 1.2rem;
+  color: #ccc;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.teamSection {
+  margin: 6rem 0;
+  text-align: center;
+}
+
+.teamGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 3rem;
+  margin-top: 3rem;
+}
+
+.teamMember {
+  text-align: center;
+}
+
+.memberPhoto {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto 1.5rem;
+  border: 3px solid #A68A56;
+}
+
+.memberImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.memberName {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #A68A56;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.memberRole {
+  font-size: 1rem;
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.memberDesc {
+  font-size: 0.9rem;
+  color: #fff;
+  margin-top: 0.5rem;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.techSection, .designSection {
+  margin: 6rem 0;
+  text-align: center;
+}
+
+.techGrid, .designGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 3rem;
+  margin-top: 3rem;
+}
+
+.techItem, .designItem {
+  padding: 2rem;
+  background-color: rgba(166, 138, 86, 0.1);
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+  text-align: left;
+}
+
+.techItem:hover, .designItem:hover {
+  transform: translateY(-10px);
+  background-color: rgba(166, 138, 86, 0.2);
+}
+
+.techTitle, .designTitle {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #A68A56;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.techList {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.techList li {
+  margin-bottom: 0.5rem;
+}
+
+.colorGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.colorItem {
+  text-align: center;
+}
+
+.colorSwatch {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin: 0 auto 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.valueItem {
+  padding: 2rem;
+  background-color: rgba(166, 138, 86, 0.1);
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.valueItem:hover {
+  transform: translateY(-10px);
+  background-color: rgba(166, 138, 86, 0.2);
+}
+
+.valueTitle {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #A68A56;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.valueItem p {
+  font-size: 1rem;
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+}
+
+@media (max-width: 992px) {
+  .teamGrid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 2rem;
+  }
+  
+  .memberPhoto {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .memberName {
+    font-size: 1.3rem;
+  }
+  
+  .memberDesc {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 6rem 1.5rem 3rem;
+  }
+  
+  .contentSection {
+    flex-direction: column;
+    gap: 2rem;
+    margin-bottom: 4rem;
+  }
+  
+  .reversed {
+    flex-direction: column;
+  }
+  
+  .statsSection {
+    flex-direction: column;
+    gap: 2rem;
+    margin: 4rem 0;
+    padding: 2rem 0;
+  }
+  
+  .statItem {
+    margin-bottom: 2rem;
+  }
+  
+  .title {
+    font-size: 2.5rem;
+  }
+  
+  .subtitle {
+    font-size: 1.2rem;
+  }
+  
+  .sectionTitle {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+  }
+  
+  .teamSection {
+    margin: 4rem 0;
+  }
+  
+  .teamGrid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .memberPhoto {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 5rem 1rem 2rem;
+  }
+  
+  .title {
+    font-size: 2rem;
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+  }
+  
+  .sectionTitle {
+    font-size: 1.5rem;
+  }
+  
+  .textBlock p {
+    font-size: 1rem;
+  }
+  
+  .teamGrid {
+    grid-template-columns: 1fr;
+    max-width: 280px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .statNumber {
+    font-size: 2.5rem;
+  }
+  
+  .statLabel {
+    font-size: 1rem;
+  }
+}

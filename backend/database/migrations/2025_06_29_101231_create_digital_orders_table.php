@@ -12,8 +12,6 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('model_id')->constrained('models')->onDelete('cascade');
-
             $table->decimal('price', 8, 2);
             $table->enum('license_type', ['personal', 'commercial', 'enterprise']);
             $table->enum('status', ['pending', 'completed', 'failed'])->default('pending');
@@ -23,7 +21,7 @@ return new class extends Migration
 
             $table->timestamps();
 
-            $table->index(['user_id', 'model_id']);
+            $table->index(['user_id']);
         });
     }
 

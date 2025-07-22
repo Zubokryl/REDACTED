@@ -6,7 +6,6 @@ export const axiosClient = axios.create({
     "X-Requested-With": "XMLHttpRequest",
     Accept: "application/json",
   },
-  withCredentials: true
 });
 
 // Add token to each request
@@ -23,14 +22,12 @@ axiosClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response handling
 axiosClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (error.response?.status === 401) {
-      // Token expired or invalid
+      // Просто удаляем accessToken, без перенаправления
       localStorage.removeItem("accessToken");
-      window.location.href = "/login";
     }
     return Promise.reject(error);
   }

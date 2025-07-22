@@ -8,7 +8,7 @@ import { useAuth } from '@/context/AuthContext';
 import { getModelById } from '@/lib/api';
 import type { ModelForm } from '@/types';
 
-const ModelPreview = dynamic(() => import('@/components/ModelPreview'), { ssr: false });
+const ModelPreview = dynamic(() => import('@/components/ModelDetailPreview'), { ssr: false });
 
 export default function ModelDetailsPage() {
   const router = useRouter();
@@ -142,7 +142,7 @@ export default function ModelDetailsPage() {
 
             <div className={styles.field}>
               <span className={styles.label}>License</span>
-              <div>{model.license ?? '-'}</div>
+              <div>{model.available_licenses?.join(', ') || '-'}</div>
             </div>
 
             <div className={styles.field}>

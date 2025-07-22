@@ -312,14 +312,9 @@ export default function CreatorProfilePage() {
                       accept="image/jpeg,image/png,image/gif"
                       onChange={handleFileSelect}
                       disabled={isUploading}
-                      className="block w-full text-sm text-gray-500
-                        file:mr-4 file:py-2 file:px-4
-                        file:rounded-full file:border-0
-                        file:text-sm file:font-semibold
-                        file:bg-violet-50 file:text-violet-700
-                        hover:file:bg-violet-100"
+                      className={styles.fileInput}
                     />
-                    <p className="mt-1 text-sm text-gray-500">
+                    <p className={styles.fileHint}>
                       JPG, PNG or GIF (max. 5MB)
                     </p>
                   </div>
