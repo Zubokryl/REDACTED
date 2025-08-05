@@ -1,11 +1,45 @@
+
 * text=auto eol=lf
 
-*.blade.php diff=html
-*.css diff=css
-*.html diff=html
-*.md diff=markdown
-*.php diff=php
 
-/.github export-ignore
-CHANGELOG.md export-ignore
-.styleci.yml export-ignore
+*.php        text eol=lf diff=php
+*.blade.php  text eol=lf diff=html
+*.js         text eol=lf
+*.jsx        text eol=lf
+*.ts         text eol=lf
+*.tsx        text eol=lf
+*.json       text eol=lf
+*.yml        text eol=lf
+*.yaml       text eol=lf
+*.env        text eol=lf
+*.sh         text eol=lf
+*.bat        text eol=crlf
+*.xml        text eol=lf
+*.sql        text eol=lf
+
+
+*.css        text eol=lf diff=css
+*.scss       text eol=lf
+*.html       text eol=lf diff=html
+*.htm        text eol=lf
+
+
+*.md         text eol=lf diff=markdown
+
+
+*.png        binary
+*.jpg        binary
+*.jpeg       binary
+*.gif        binary
+*.ico        binary
+*.svg        text
+*.ttf        binary
+*.woff       binary
+*.woff2      binary
+*.eot        binary
+*.pdf        binary
+
+
+/.github            export-ignore
+CHANGELOG.md        export-ignore
+.styleci.yml        export-ignore

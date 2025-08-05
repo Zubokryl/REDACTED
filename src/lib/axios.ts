@@ -26,7 +26,7 @@ axiosClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (error.response?.status === 401) {
-      // Просто удаляем accessToken, без перенаправления
+    
       localStorage.removeItem("accessToken");
     }
     return Promise.reject(error);

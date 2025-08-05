@@ -1,0 +1,26 @@
+.errorContainer {
+  padding: 2rem;
+  background-color: rgba(26, 26, 26, 0.9);
+  border: 1px solid #73171F;
+  border-radius: 8px;
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.resetButton {
+  background-color: #A68A56;
+  color: #111;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: all 0.3s ease;
+}
+
+.resetButton:hover {
+  background-color: #c4a46a;
+  transform: translateY(-2px);
+}
