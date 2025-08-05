@@ -10,34 +10,37 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+
+           
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
             $table->enum('role', ['user', 'creator', 'admin'])->default('creator');
 
+            
             $table->text('about')->nullable();
-            $table->json('social_links')->nullable();
             $table->text('experience')->nullable();
             $table->text('skills')->nullable();
             $table->json('software')->nullable();
+            $table->json('social_links')->nullable();
             $table->string('contact')->nullable();
 
-            // Jetstream / Fortify 
-            $table->timestamp('email_verified_at')->nullable();
-            $table->rememberToken();
-            $table->foreignId('current_team_id')->nullable();
-            $table->string('profile_photo_path', 2048)->nullable();
+            $table->text('profile_photo_url')->nullable();
+
+            // Two-factor (Fortify)
             $table->text('two_factor_secret')->nullable();
             $table->text('two_factor_recovery_codes')->nullable();
             $table->timestamp('two_factor_confirmed_at')->nullable();
+
+            // Jetstream
+            $table->timestamp('email_verified_at')->nullable();
+            $table->rememberToken();
+            $table->foreignId('current_team_id')->nullable();
 
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('users');

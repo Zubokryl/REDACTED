@@ -8,12 +8,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
-use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, HasProfilePhoto, Notifiable, TwoFactorAuthenticatable, CanResetPassword;
+    use HasApiTokens, HasFactory, Notifiable, TwoFactorAuthenticatable, CanResetPassword;
 
     /**
      * The attributes that are mass assignable.
@@ -34,6 +33,7 @@ class User extends Authenticatable
         'two_factor_secret',
         'two_factor_recovery_codes',
         'two_factor_confirmed_at',
+        'profile_photo_url',
     ];
 
     /**
@@ -74,7 +74,18 @@ class User extends Authenticatable
         ];
     }
 
-    /**
+     /**
+     * Get the user's profile photo URL.
+     *
+     * @return string
+     */
+    public function getProfilePhotoUrlAttribute(): string
+    {
+        return $this->attributes['profile_photo_url']
+            ?? 'https://ui-avatars.com/api/?name=' . urlencode($this->name);
+    }
+
+     /**
      * Send the password reset notification.
      *
      * @param  string  $token

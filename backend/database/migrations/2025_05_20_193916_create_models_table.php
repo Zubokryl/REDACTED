@@ -17,7 +17,8 @@ class CreateModelsTable extends Migration
             $table->text('description')->nullable();
             $table->string('category')->nullable();
             $table->decimal('price', 8, 2)->default(0);
-            $table->string('license')->default('Standard License');
+
+            $table->json('available_licenses')->nullable(); 
             $table->json('formats')->nullable();
             $table->json('features')->nullable();
             $table->integer('vertices')->default(0);
@@ -32,10 +33,17 @@ class CreateModelsTable extends Migration
             $table->string('model_file');
             $table->json('images')->nullable();
             $table->string('preview_video')->nullable();
+            $table->string('preview_image')->nullable();
+
+            $table->string('tbscene_file')->nullable();
+            $table->json('texture_files')->nullable();
+
+            $table->string('extracted_model_file')->nullable();
+            $table->string('extracted_tbscene_file')->nullable();
 
             $table->timestamps();
 
-            // Add indexes for better performance
+            // Индексы
             $table->index('creator_id');
             $table->index('category');
             $table->index('price');

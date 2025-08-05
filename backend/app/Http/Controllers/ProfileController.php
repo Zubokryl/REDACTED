@@ -150,7 +150,7 @@ protected function updateUserProfile(Request $request, $user)
             $filename = 'profile_photos/' . uniqid() . '.' . $file->getClientOriginalExtension();
             $path = $file->storeAs('profile_photos', basename($filename), 'public');
 
-            $user->profile_photo_path = $path;
+            $user->profile_photo_url = asset('storage/' . $path);
         }
     }
 
@@ -249,7 +249,7 @@ protected function updateUserProfile(Request $request, $user)
                 }
 
                 // Update user profile
-                $user->profile_photo_path = $path;
+                $user->profile_photo_url = asset('storage/' . $path);
                 
                 \Log::info('Profile photo saved successfully:', [
                     'filename' => $filename,
