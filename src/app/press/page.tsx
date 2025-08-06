@@ -4,16 +4,13 @@ import React, { useState } from "react";
 import Image from "next/image";
 import styles from "./PressStyles.module.css";
 
-/**
- * PressPage — press-kit hub with colour swatches, fact sheet & brand downloads.
- */
 export default function PressPage() {
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const toggleDisclaimer = () => setShowDisclaimer((prev) => !prev);
 
   return (
     <div className={styles.container}>
-      {/* ───────────────────── Hero / Key Visual ───────────────────── */}
+      {/* Hero / Key Visual */}
       <section className={styles.heroSection}>
         <h1 className={styles.title}>Press Kit</h1>
         <p className={styles.subtitle}>Everything press related to REDACTED.</p>
@@ -32,7 +29,7 @@ export default function PressPage() {
         </div>
       </section>
 
-      {/* ───────────────────────── Fact Sheet ─────────────────────── */}
+      {/*Fact Sheet */}
       <section className={styles.factsSection}>
         <h2 className={styles.sectionTitle}>Fact Sheet</h2>
 
@@ -59,7 +56,7 @@ export default function PressPage() {
         </ul>
       </section>
 
-      {/* ─────────────────────── Brand Assets ──────────────────────── */}
+      {/* Brand Assets */}
       <section className={styles.brandSection}>
         <h2 className={styles.sectionTitle}>Brand Assets</h2>
         <p className={styles.sectionIntro}>
@@ -68,7 +65,7 @@ export default function PressPage() {
         </p>
 
         <div className={styles.assetGrid}>
-          {/* ───────────── Logos ───────────── */}
+          {/* Logos */}
           <div className={styles.assetItem}>
             <Image
               src="/LOGO V1.svg"
@@ -91,7 +88,7 @@ export default function PressPage() {
             </a>
           </div>
 
-          {/* ───────────── Swatches ───────────── */}
+          {/* Swatches */}
           <div className={styles.assetItem}>
             <div className={styles.swatchGrid}>
               <div className={`${styles.swatchItem} ${styles.swatchRed}`}>
@@ -112,7 +109,7 @@ export default function PressPage() {
             </a>
           </div>
 
-          {/* ───────── Typography ───────── */}
+          {/* Typography */}
           <div className={styles.assetItem}>
             <span className={styles.typoSample}>Aa</span>
             <p className={styles.typoDescription}>
@@ -124,7 +121,7 @@ export default function PressPage() {
           </div>
         </div>
 
-        {/* ───────── Logo Rules ───────── */}
+        {/* Logo Rules */}
         <div className={styles.usageRules}>
           <h3 className={styles.rulesTitle}>Logo Usage</h3>
           <ul className={styles.rulesList}>
@@ -136,7 +133,7 @@ export default function PressPage() {
         </div>
       </section>
 
-      {/* ─────────────────── Key Visuals ─────────────────── */}
+      {/* Key Visuals */}
       <section className={styles.visualsSection}>
         <h2 className={styles.sectionTitle}>Key Visuals</h2>
         <div className={styles.visualGrid}>
@@ -188,12 +185,13 @@ export default function PressPage() {
         </div>
       </section>
 
-      {/* ─────────────────── Tech Specs ─────────────────── */}
+      {/* Tech Specs */}
       <section className={styles.techSection}>
         <h2 className={styles.sectionTitle}>Tech Specs</h2>
         <ul className={styles.techList}>
           <li>
-            <strong>Stack:</strong> Next.js 14 <strong>|</strong> Laravel API <strong>|</strong> MySQL
+            <strong>Stack:</strong> Next.js 14 <strong>|</strong> Laravel API{" "}
+            <strong>|</strong> MySQL
           </li>
           <li>
             <strong>3D Viewer:</strong> three.js WebGL
@@ -204,13 +202,14 @@ export default function PressPage() {
         </ul>
       </section>
 
-      {/* ───────────────────── Quotes ───────────────────── */}
+      {/* Quotes */}
       <section className={styles.quoteSection}>
         <h2 className={styles.sectionTitle}>Quotes</h2>
         <div className={styles.quoteGrid}>
           <figure className={styles.quoteItem}>
             <blockquote>
-              “Das richtige Asset zu finden sollte wenige Minuten dauern, nicht Tage.”
+              “Das richtige Asset zu finden sollte wenige Minuten dauern, nicht
+              Tage.”
             </blockquote>
             <br />
             <blockquote>
@@ -232,7 +231,7 @@ export default function PressPage() {
         </div>
       </section>
 
-      {/* ─────────────────── Downloads / Docs ─────────────────── */}
+      {/* Downloads / Docs */}
       <section className={styles.downloadSection}>
         <h2 className={styles.sectionTitle}>Downloads</h2>
         <div className={styles.downloadGrid}>
@@ -250,17 +249,13 @@ export default function PressPage() {
           >
             Press Release in German/English (.pdf)
           </a>
-          <a
-            href="/press/Logos.zip"
-            download
-            className={styles.downloadCard}
-          >
+          <a href="/press/Logos.zip" download className={styles.downloadCard}>
             Logos (.zip)
           </a>
         </div>
       </section>
 
-      {/* ───────────────────── Disclaimer ───────────────────── */}
+      {/* Disclaimer */}
       <section className={styles.disclaimerSection}>
         <button onClick={toggleDisclaimer} className={styles.disclaimerToggle}>
           {showDisclaimer ? "Hide" : "Show"} Disclaimer
