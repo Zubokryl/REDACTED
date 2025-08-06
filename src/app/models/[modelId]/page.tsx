@@ -20,46 +20,44 @@ export default function ModelDetailsPage() {
   const { user } = useAuth();
   const [selectedLicense, setSelectedLicense] = useState<LicenseType>('personal');
 
-
   const [model, setModel] = useState<ModelForm | null>(null);
   const { addToCart } = useCart();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-const handleBuyModel = () => {
-  if (!model?.id) {
-    console.error('Model ID is missing');
-    return;
-  }
+  const handleBuyModel = () => {
+    if (!model?.id) {
+      console.error('Model ID is missing');
+      return;
+    }
 
+    const price = typeof model.price === 'number'
+      ? model.price
+      : model.price
+        ? parseFloat(model.price)
+        : 0;
 
-  const price = typeof model.price === 'number'
-    ? model.price
-    : model.price
-      ? parseFloat(model.price)
-      : 0;
+    let previewUrl: string | undefined = undefined;
 
-  let previewUrl: string | undefined = undefined;
+    if (typeof model.preview_file === 'string' && model.preview_file) {
+      previewUrl = (model.preview_file as string).startsWith('http')
+        ? model.preview_file
+        : `http://localhost:8000/storage/previews/${model.preview_file}`;
+    } else if (model.preview_file instanceof File) {
+      previewUrl = URL.createObjectURL(model.preview_file);
+    }
 
-  if (typeof model.preview_file === 'string' && model.preview_file) {
-    previewUrl = (model.preview_file as string).startsWith('http')
-      ? model.preview_file
-      : `http://localhost:8000/storage/previews/${model.preview_file}`;
-  } else if (model.preview_file instanceof File) {
-    previewUrl = URL.createObjectURL(model.preview_file);
-  }
+    addToCart({
+      model_id: model.id,
+      title: model.title,
+      license_type: selectedLicense,
+      base_price: price,
+      price: price * licenseCoefficient(selectedLicense),
+      preview_image_url: previewUrl ?? '',
+    });
 
-addToCart({
-  model_id: model.id,
-  title: model.title,
-  license_type: selectedLicense,
-  base_price: price,
-  price: price * licenseCoefficient(selectedLicense),
-  preview_image_url: previewUrl ?? '', 
-});
-
-  router.push('/cart');
-};
+    router.push('/cart');
+  };
 
   useEffect(() => {
     if (!user) {
@@ -86,6 +84,7 @@ addToCart({
       <div className={styles.contentWrapper}>
         {/* Left column */}
         <div className={styles.leftColumn}>
+          {/* ✅ Заменённый блок показа модели */}
           <div className={styles.modelPreview}>
             {model.model_file && (
               <ModelPreview 
@@ -115,7 +114,6 @@ addToCart({
               </div>
             </div>
           </div>
-
 
           {/* Other fields */}
           <div className={styles.gridFields}>
@@ -160,10 +158,10 @@ addToCart({
               </div>
             </div>
 
-           <div className={styles.field}>
-  <span className={styles.label}>License</span>
-  <div>{model.available_licenses?.[0] ?? '-'}</div>
-</div>
+            <div className={styles.field}>
+              <span className={styles.label}>License</span>
+              <div>{model.available_licenses?.[0] ?? '-'}</div>
+            </div>
 
             <div className={styles.field}>
               <span className={styles.label}>Release Date</span>
@@ -172,52 +170,48 @@ addToCart({
           </div>
         </div>
 
-    {/* Right column */}
-<div className={styles.titleColumn}>
-  <div className={styles.field}>
-    <span className={styles.label}>
-      Model Title
-    </span>
-    <div>{model.title}</div>
-  </div>
-  <div className={styles.field}>
-    <span className={styles.label}>
-      Description
-    </span>
-    <p>{model.description ?? '-'}</p>
-  </div>
+        {/* Right column */}
+        <div className={styles.titleColumn}>
+          <div className={styles.field}>
+            <span className={styles.label}>Model Title</span>
+            <div>{model.title}</div>
+          </div>
+          <div className={styles.field}>
+            <span className={styles.label}>Description</span>
+            <p>{model.description ?? '-'}</p>
+          </div>
 
-  {model.available_licenses && (
-  <div className={styles.field}>
-    <span className={styles.label}>Choose License</span>
-    <select
-      value={selectedLicense}
-      onChange={(e) => setSelectedLicense(e.target.value as LicenseType)}
-      className={styles.select}
-    >
-      {model.available_licenses.map((license) => (
-        <option key={license} value={license}>
-          {license === 'personal' ? 'Standard License' :
-           license === 'commercial' ? 'Editorial Use' :
-           license === 'enterprise' ? 'Commercial Use' :
-           license}
-        </option>
-      ))}
-    </select>
-  </div>
-)}
+          {model.available_licenses && (
+            <div className={styles.field}>
+              <span className={styles.label}>Choose License</span>
+              <select
+                value={selectedLicense}
+                onChange={(e) => setSelectedLicense(e.target.value as LicenseType)}
+                className={styles.select}
+              >
+                {model.available_licenses.map((license) => (
+                  <option key={license} value={license}>
+                    {license === 'personal' ? 'Standard License' :
+                     license === 'commercial' ? 'Editorial Use' :
+                     license === 'enterprise' ? 'Commercial Use' :
+                     license}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
-  {/* Mock "Buy Model" button */}
-  <div className={styles.field}>
-      <button
-        onClick={handleBuyModel}
-        className={styles.buyBtn}>
-        Buy Model
-      </button>
-         </div>
+          {/* Buy button */}
+          <div className={styles.field}>
+            <button
+              onClick={handleBuyModel}
+              className={styles.buyBtn}
+            >
+              Buy Model
+            </button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-
-)
-};
+  );
+}

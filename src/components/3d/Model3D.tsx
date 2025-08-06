@@ -46,6 +46,7 @@ const GLTFModel = memo(({ url }: { url: string }) => {
 
   return <primitive object={scene} />;
 });
+GLTFModel.displayName = 'GLTFModel';
 
 /**
  * FBX Model Component
@@ -74,6 +75,7 @@ const FBXModel = memo(({ url }: { url: string }) => {
   
   return model ? <primitive ref={groupRef} object={model} /> : null;
 });
+FBXModel.displayName = 'FBXModel';
 
 /**
  * Generic 3D Model component that handles different file formats
