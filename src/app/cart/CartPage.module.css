@@ -3,6 +3,7 @@
   margin: 2rem auto;
   margin-top: 5rem;
   padding: 1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .heading {
@@ -58,12 +59,15 @@
 }
 
 .summary {
-  margin-top: 2rem;
+  display: flex;
+  justify-content: end;
+  gap: 1rem;
   text-align: right;
 }
 
 .clearButton {
   background: #73171F;
+  color: white;
   border: none;
   margin-right: 1rem;
   padding: 0.5rem 1rem;

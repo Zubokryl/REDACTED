@@ -1,98 +1,114 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import axiosClient from '@/lib/axios'
-import { loadStripe } from '@stripe/stripe-js'
+import { useState, useCallback } from "react";
+import { loadStripe } from "@stripe/stripe-js";
 import {
   Elements,
   CardElement,
   useStripe,
   useElements,
-} from '@stripe/react-stripe-js'
-import { useCart } from '@/context/CartContext'
-import { useAuth } from '@/context/AuthContext'
-import { createBulkOrder } from '@/lib/api'
-import styles from './CheckoutPage.module.css'
+} from "@stripe/react-stripe-js";
+import axiosClient from "@/lib/axios";
+import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
+import { createBulkOrder } from "@/lib/api";
+import styles from "./CheckoutPage.module.css";
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
+/**
+ * Stripe init
+ * - reads the key from NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY .env.local only
+ * – If the env‑var is undefined we pass an empty string so the Promise still
+ * resolves (Stripe will then warn in console).
+ */
+
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
+);
 
 type PaymentSectionProps = {
-  clientSecret: string
-  onSuccess: () => void
-}
+  clientSecret: string;
+  orderId: number;
+  onSuccess: () => void;
+  onCancel: () => void;
+};
 
-const PaymentSection = ({ clientSecret, onSuccess, onCancel, orderId }: PaymentSectionProps & { onCancel: () => void; orderId: number }) => {
-  const stripe = useStripe()
-  const elements = useElements()
-  const [loading, setLoading] = useState(false)
-  const [email, setEmail] = useState('')
+const PaymentSection = ({
+  clientSecret,
+  orderId,
+  onSuccess,
+  onCancel,
+}: PaymentSectionProps) => {
+  const stripe = useStripe();
+  const elements = useElements();
+
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!stripe || !elements || !clientSecret) return
+    e.preventDefault();
+    if (!stripe || !elements) return;
 
-    setLoading(true)
+    setLoading(true);
+    setErrorMsg(null);
 
-    const cardElement = elements.getElement(CardElement)
-    if (!cardElement) {
-      console.error('Card Element not found')
-      setLoading(false)
-      return
+    const card = elements.getElement(CardElement);
+    if (!card) {
+      setErrorMsg("Card element not initialised");
+      setLoading(false);
+      return;
     }
 
-    const result = await stripe.confirmCardPayment(clientSecret, {
-      payment_method: {
-        card: cardElement,
-        billing_details: {
-          email,
+    const { error, paymentIntent } = await stripe.confirmCardPayment(
+      clientSecret,
+      {
+        payment_method: {
+          card,
+          billing_details: { email },
         },
-      },
-    })
+      }
+    );
 
-    if (result.error) {
-      console.error('Payment error:', result.error.message)
-      alert(result.error.message)
-    } else if (result.paymentIntent?.status === 'succeeded') {
-      onSuccess()
+    if (error) {
+      setErrorMsg(error.message ?? "Payment failed");
+    } else if (paymentIntent && paymentIntent.status === "succeeded") {
+      onSuccess();
     }
 
-    setLoading(false)
-  }
+    setLoading(false);
+  };
 
   return (
     <form onSubmit={handleSubmit} className={styles.itemsList}>
       <p>Order ID: {orderId}</p>
 
-      <label>
+      <label className={styles.label}>
         Email for receipt:
         <input
           type="email"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className={styles.input} 
+          className={styles.input}
         />
       </label>
 
       <CardElement
-  className={styles.stripeInput}
-  options={{
-    style: {
-      base: {
-        fontSize: '18px',
-        color: '#fff',
-        letterSpacing: '0.5px',
-        '::placeholder': {
-          color: '#888',
-        },
-      },
-      invalid: {
-        color: '#e53e3e',
-      },
-    },
-  }}
-/>
+        className={styles.stripeInput}
+        options={{
+          style: {
+            base: {
+              fontSize: "18px",
+              color: "#fff",
+              letterSpacing: "0.5px",
+              "::placeholder": { color: "#888" },
+            },
+            invalid: { color: "#e53e3e" },
+          },
+        }}
+      />
 
+      {errorMsg && <p className={styles.error}>{errorMsg}</p>}
 
       <div className={styles.buttonGroup}>
         <button
@@ -102,99 +118,101 @@ const PaymentSection = ({ clientSecret, onSuccess, onCancel, orderId }: PaymentS
         >
           Cancel
         </button>
-
         <button
           type="submit"
           disabled={!stripe || loading}
           className={`${styles.button} ${styles.buttonGreen}`}
         >
-          {loading ? 'Processing...' : 'Pay now'}
+          {loading ? "Processing…" : "Pay now"}
         </button>
       </div>
     </form>
-  )
-}
-
+  );
+};
 
 export default function PaymentPage() {
-  const { user } = useAuth()
-  const { cartItems, getTotalPrice, clearCart } = useCart()
-  const [confirmed, setConfirmed] = useState(false)
-  const [clientSecret, setClientSecret] = useState<string | null>(null)
-  const [orderId, setOrderId] = useState<number | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [paymentSuccess, setPaymentSuccess] = useState(false)
+  const { user } = useAuth();
+  const { cartItems, getTotalPrice, clearCart } = useCart();
 
-  const handleConfirmOrder = async () => {
+  const [confirmed, setConfirmed] = useState(false);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [orderId, setOrderId] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+
+  /**
+   * 1. Creates the Digital Order via backend
+   * 2. Creates the PaymentIntent and returns client_secret
+   */
+  const handleConfirmOrder = useCallback(async () => {
     if (!user) {
-      alert('Please log in to proceed.')
-      return
+      alert("Please log in to proceed.");
+      return;
     }
     if (cartItems.length === 0) {
-      alert('Your cart is empty.')
-      return
+      alert("Your cart is empty.");
+      return;
     }
-    setLoading(true)
 
+    setLoading(true);
     try {
       const orderRes = await createBulkOrder({
-        items: cartItems.map(item => ({
+        items: cartItems.map((item) => ({
           model_id: item.model_id,
           license_type: item.license_type,
         })),
-      })
+      });
 
-      const id = orderRes.order.id
-      const amount = Math.round(getTotalPrice() * 100)
+      const id = orderRes.order.id as number;
+      const amount = Math.round(getTotalPrice() * 100); // cents
 
-      const res = await axiosClient.post('/payments', {
+      const res = await axiosClient.post("/payments", {
         order_ids: [id],
         amount,
-        currency: 'usd',
-        success_url: `${window.location.origin}/success`,
-        cancel_url: `${window.location.origin}/cancel`,
-      })
+        currency: "usd",
+        success_url: `${window.location.origin}/payment/success`,
+        cancel_url: `${window.location.origin}/payment/cancel`,
+      });
 
       if (![200, 201].includes(res.status)) {
-  throw new Error('Failed to create payment.')
-}
+        throw new Error("Failed to create payment.");
+      }
 
-setClientSecret(res.data.client_secret)
-setOrderId(id)
-setConfirmed(true)
-} catch (err) {
-  console.error('Error confirming the order:', err)
-  alert('An error occurred while creating the payment. Please try again later.')
-} finally {
-  setLoading(false)
-}
-}
+      setClientSecret(res.data.client_secret);
+      setOrderId(id);
+      setConfirmed(true);
+    } catch (err) {
+      console.error("Error confirming the order:", err);
+      alert("An error occurred. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  }, [user, cartItems, getTotalPrice]);
 
   const handleCancel = () => {
-    setConfirmed(false)
-    setClientSecret(null)
-    setOrderId(null)
-  }
+    setConfirmed(false);
+    setClientSecret(null);
+    setOrderId(null);
+  };
 
   if (!user) {
     return (
       <div className={styles.containerCentered}>
         <p>Please log in to proceed with payment.</p>
       </div>
-    )
+    );
   }
 
   return (
     <div className={styles.containerCentered}>
       <div className={styles.paymentBox}>
         <h1 className={styles.title}>
-  {paymentSuccess 
-    ? 'Payment was successful!' 
-    : confirmed 
-      ? 'Complete Your Payment'
-      : 'Review Your Order'
-  }
-</h1>
+          {paymentSuccess
+            ? "Payment was successful!"
+            : confirmed
+            ? "Complete Your Payment"
+            : "Review Your Order"}
+        </h1>
 
         {paymentSuccess ? (
           <div className={styles.successMessage}>
@@ -210,13 +228,11 @@ setConfirmed(true)
                 </li>
               ))}
             </ul>
-            <p className={styles.total}>
-              Total: ${getTotalPrice().toFixed(2)}
-            </p>
+            <p className={styles.total}>Total: € {getTotalPrice().toFixed(2)}</p>
 
             <div className={styles.buttonGroup}>
               <button
-                onClick={() => (window.location.href = '/cart')}
+                onClick={() => (window.location.href = "/cart")}
                 className={`${styles.button} ${styles.buttonGray}`}
               >
                 Edit
@@ -232,29 +248,26 @@ setConfirmed(true)
                 disabled={loading}
                 className={`${styles.button} ${styles.buttonGreen}`}
               >
-                {loading ? 'Confirming...' : 'Confirm'}
+                {loading ? "Confirming…" : "Proceed to Payment"}
               </button>
             </div>
           </>
         ) : clientSecret ? (
-  <Elements
-    stripe={stripePromise}
-    options={{ clientSecret }}
-  >
-    <PaymentSection
-      clientSecret={clientSecret}
-      onSuccess={async () => {
-        await clearCart()
-        setPaymentSuccess(true)
-      }}
-      onCancel={handleCancel}
-      orderId={orderId!}
-    />
-  </Elements>
-) : (
-  <p>Creating payment session...</p>
+          <Elements stripe={stripePromise} options={{ clientSecret }}>
+            <PaymentSection
+              clientSecret={clientSecret}
+              orderId={orderId!}
+              onSuccess={async () => {
+                await clearCart();
+                setPaymentSuccess(true);
+              }}
+              onCancel={handleCancel}
+            />
+          </Elements>
+        ) : (
+          <p>Creating payment session…</p>
         )}
       </div>
     </div>
-  )
+  );
 }
