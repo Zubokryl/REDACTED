@@ -1,0 +1,66 @@
+/* Farbwelt & Typo angelehnt an deine Contact/Press Styles */
+.container {
+  padding: 8rem 2rem 4rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #73171F;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: #ccc;
+  margin-bottom: 2rem;
+}
+
+.card {
+  background-color: rgba(20, 20, 20, 0.8);
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  margin-bottom: 2rem;
+}
+
+.sectionTitle {
+  font-size: 1.6rem;
+  color: #A68A56;
+  margin-bottom: 0.75rem;
+}
+
+.text {
+  color: #eee;
+  line-height: 1.7;
+  font-size: 1rem;
+}
+
+.list {
+  margin: 0.5rem 0 1rem 1.25rem;
+  color: #eee;
+  line-height: 1.7;
+}
+
+.link {
+  color: #A68A56;
+  text-decoration: none;
+}
+.link:hover {
+  text-decoration: underline;
+}
+
+.small {
+  color: #bbb;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .title { font-size: 2.2rem; }
+}
