@@ -6,6 +6,7 @@ import { CartProvider } from '@/context/CartContext';
 import Header from '../components/layout/Header'; 
 import Footer from '../components/layout/Footer'; 
 import { Toaster } from 'react-hot-toast';
+import CookieBanner from '@/components/CookieBanner/CookieBanner';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,6 +39,7 @@ export default function RootLayout({
               <Header />
               <main className="layout-main">{children}</main>
               <Footer />
+              <CookieBanner />
             </div>
           </CartProvider>
         </AuthProvider>
