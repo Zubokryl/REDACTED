@@ -228,7 +228,7 @@ export default function PaymentPage() {
                 </li>
               ))}
             </ul>
-            <p className={styles.total}>Total: ${getTotalPrice().toFixed(2)}</p>
+            <p className={styles.total}>Total: € {getTotalPrice().toFixed(2)}</p>
 
             <div className={styles.buttonGroup}>
               <button
