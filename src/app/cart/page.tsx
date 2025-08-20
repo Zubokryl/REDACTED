@@ -42,7 +42,7 @@ const CartPage = () => {
                   <p className={styles.license}>
   License: {item.license_type} (x{licenseCoefficient(item.license_type)})
 </p>
-                  <p className={styles.price}>${item.price.toFixed(2)}</p>
+                  <p className={styles.price}>€ {item.price.toFixed(2)}</p>
                 </div>
                <button
   className={styles.removeButton}

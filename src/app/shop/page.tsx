@@ -208,7 +208,7 @@ return (
               <span className={styles.creatorName}>{model.creator.name}</span>
             </Link>
 
-            <span className={styles.price}>${model.price}</span>
+            <span className={styles.price}>€ {model.price}</span>
           </div>
         </div>
       ))}

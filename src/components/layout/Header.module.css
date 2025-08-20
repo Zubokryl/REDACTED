@@ -9,7 +9,7 @@
     padding: 1.5rem 2.5rem;
     background-color: transparent; 
     z-index: 100; 
-    font-family: 'Drexia', sans-serif;
+    font-family: 'Golos', sans-serif;
   }
 
   .headerWithBg {
@@ -99,12 +99,12 @@
   .link {
     color: #73171F;
     text-decoration: none;
-    font-size: 2.5rem;
+    font-size: 2rem;
     position: relative;
     background: none;
     border: none;
     cursor: pointer;
-    font-family: 'Drexia', sans-serif;
+    font-family: 'Golos', sans-serif;
     display: flex;
     align-items: center;
   }
