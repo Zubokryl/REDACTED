@@ -17,7 +17,7 @@ import styles from "./CheckoutPage.module.css";
 /**
  * Stripe init
  * - reads the key from NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY .env.local only
- * – If the env‑var is undefined we pass an empty string so the Promise still
+ * - If the env-var is undefined we pass an empty string so the Promise still
  * resolves (Stripe will then warn in console).
  */
 

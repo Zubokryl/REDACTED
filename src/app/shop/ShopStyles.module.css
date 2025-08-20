@@ -31,6 +31,7 @@
   position: relative;
   transition: transform 0.2s;
   border: 1px solid #333;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .field {
@@ -293,7 +294,7 @@
   margin-bottom: 1rem;
   max-width: none; /* убрать ограничение ширины */
   width: auto;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 0.95rem;
   color: #A68A56;
   background-color: #1a1a1a;
